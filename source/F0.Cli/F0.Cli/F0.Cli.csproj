@@ -4,6 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>F0.Cli</AssemblyName>
     <RootNamespace>F0</RootNamespace>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0" />
+  </ItemGroup>
 
 </Project>
