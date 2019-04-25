@@ -8,7 +8,7 @@ namespace F0.Reflection
 	internal sealed class AmbiguousCommandArgumentsException : Exception
 	{
 		public AmbiguousCommandArgumentsException(CommandBase command, PropertyInfo[] candidates)
-			 : base(CreateMessage(command, candidates))
+			: base(CreateMessage(command, candidates))
 		{
 		}
 

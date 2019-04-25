@@ -6,7 +6,7 @@ namespace F0.Reflection
 	internal sealed class CommandArgumentsNotFoundException : Exception
 	{
 		public CommandArgumentsNotFoundException(CommandBase command)
-			 : base(CreateMessage(command))
+			: base(CreateMessage(command))
 		{
 		}
 

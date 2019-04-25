@@ -5,7 +5,7 @@ namespace F0.Reflection
 	internal sealed class CommandNotFoundException : Exception
 	{
 		public CommandNotFoundException(string verb)
-			 : base(CreateMessage(verb))
+			: base(CreateMessage(verb))
 		{
 		}
 

@@ -6,7 +6,7 @@ namespace F0.Reflection
 	internal sealed class InvalidCommandSwitchException : Exception
 	{
 		public InvalidCommandSwitchException(PropertyInfo property)
-			 : base(CreateMessage(property))
+			: base(CreateMessage(property))
 		{
 		}
 

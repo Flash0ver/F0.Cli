@@ -5,7 +5,7 @@ namespace F0.Cli
 	internal sealed class AnonymousOptionException : Exception
 	{
 		public AnonymousOptionException()
-			 : base(CreateMessage())
+			: base(CreateMessage())
 		{
 		}
 

@@ -6,7 +6,7 @@ namespace F0.Reflection
 	internal sealed class CommandExecutionException : Exception
 	{
 		public CommandExecutionException(CommandBase command, Exception inner)
-			 : base(CreateMessage(command), inner)
+			: base(CreateMessage(command), inner)
 		{
 		}
 
