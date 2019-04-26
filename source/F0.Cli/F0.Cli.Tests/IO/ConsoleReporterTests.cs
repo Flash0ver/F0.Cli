@@ -10,22 +10,11 @@ namespace F0.Tests.IO
 	[Collection(nameof(Console))]
 	public class ConsoleReporterTests : IDisposable
 	{
-		private readonly IReporter reporter;
 		private readonly TextWriter writer;
 
 		public ConsoleReporterTests()
 		{
-			reporter = new ConsoleReporter();
-
-			Check_That_UseSystemConsole();
-
 			writer = new StringWriter();
-			Console.SetOut(writer);
-		}
-
-		private static void Check_That_UseSystemConsole()
-		{
-			Assert.False(Console.IsOutputRedirected);
 		}
 
 		void IDisposable.Dispose()
@@ -49,8 +38,20 @@ namespace F0.Tests.IO
 		}
 
 		[Fact]
+		public void DoesNotRedirectTheStandardOutputStream()
+		{
+			TextWriter before = Console.Out;
+			_ = new ConsoleReporter();
+			TextWriter after = Console.Out;
+
+			Assert.Same(before, after);
+		}
+
+		[Fact]
 		public void Write_EmptyNewLine()
 		{
+			IReporter reporter = CreateReporter(writer);
+
 			Assert.Equal("", writer.ToString());
 			reporter.WriteLine();
 			Assert.Equal($"{Console.Out.NewLine}", writer.ToString());
@@ -59,6 +60,8 @@ namespace F0.Tests.IO
 		[Fact]
 		public void Write_Information()
 		{
+			IReporter reporter = CreateReporter(writer);
+
 			Assert.Equal("", writer.ToString());
 			reporter.WriteInfo("Information");
 			Assert.Equal($"Information{Console.Out.NewLine}", writer.ToString());
@@ -67,6 +70,8 @@ namespace F0.Tests.IO
 		[Fact]
 		public void Write_Warning()
 		{
+			IReporter reporter = CreateReporter(writer);
+
 			Assert.Equal("", writer.ToString());
 			reporter.WriteWarning("Warning");
 			Assert.Equal($"Warning{Console.Out.NewLine}", writer.ToString());
@@ -75,9 +80,18 @@ namespace F0.Tests.IO
 		[Fact]
 		public void Write_Error()
 		{
+			IReporter reporter = CreateReporter(writer);
+
 			Assert.Equal("", writer.ToString());
 			reporter.WriteError("Error");
 			Assert.Equal($"Error{Console.Out.NewLine}", writer.ToString());
+		}
+
+		private static ConsoleReporter CreateReporter(TextWriter standardOutput)
+		{
+			var reporter = new ConsoleReporter();
+			Console.SetOut(standardOutput);
+			return reporter;
 		}
 	}
 }
