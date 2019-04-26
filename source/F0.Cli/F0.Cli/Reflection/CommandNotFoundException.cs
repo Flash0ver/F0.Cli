@@ -11,7 +11,7 @@ namespace F0.Reflection
 
 		private static string CreateMessage(string verb)
 		{
-			string message = $@"Command '{verb}' not found.";
+			string message = $"Command '{verb}' not found.";
 			return message;
 		}
 	}

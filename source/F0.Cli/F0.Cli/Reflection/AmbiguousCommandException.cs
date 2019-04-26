@@ -14,7 +14,7 @@ namespace F0.Reflection
 		{
 			string ambiguities = String.Join(Environment.NewLine, candidates.Select(candidate => candidate.FullName));
 
-			string message = $@"Ambiguous command '{verb}'. Multiple commands matched:";
+			string message = $"Ambiguous command '{verb}'. Multiple commands matched:";
 			message += $"{Environment.NewLine}{ambiguities}";
 			return message;
 		}
