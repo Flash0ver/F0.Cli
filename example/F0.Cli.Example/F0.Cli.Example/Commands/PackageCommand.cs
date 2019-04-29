@@ -48,5 +48,12 @@ namespace F0.Cli.Example.Commands
 			reporter.WriteInfo($"Executed {nameof(PackageCommand)}");
 			return Success();
 		}
+
+		public override void Dispose()
+		{
+			reporter.WriteInfo($"Disposing {nameof(PackageCommand)}");
+
+			base.Dispose();
+		}
 	}
 }

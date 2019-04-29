@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace F0.Cli.Example.Http
 {
-	internal sealed class NuGetClient : INuGetClient
+	internal sealed class NuGetClient : INuGetClient, IDisposable
 	{
 		private readonly HttpClient client;
 
@@ -64,6 +64,11 @@ namespace F0.Cli.Example.Http
 			}
 
 			return text.ToString();
+		}
+
+		void IDisposable.Dispose()
+		{
+			client.Dispose();
 		}
 	}
 }
