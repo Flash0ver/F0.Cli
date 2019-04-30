@@ -16,7 +16,7 @@
     <Product>F0.Cli</Product>
     <Description>A command-based programming model and utilities to facilitate developing testable command-line interfaces and console applications.</Description>
     <Copyright>© f[0]</Copyright>
-    <PackageLicenseUrl>https://github.com/Flash0ver/F0.Cli/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Flash0ver/F0.Cli</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Flash0ver/F0/master/Branding/NuGet/F0.Cli.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Flash0ver/F0.Cli.git</RepositoryUrl>
