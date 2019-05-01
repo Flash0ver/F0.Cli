@@ -27,7 +27,7 @@ namespace F0.Tests.Reflection
 		}
 
 		[Fact]
-		public void CreateParameterlessCommand()
+		public void CreateCommandWithParameterlessConstructor()
 		{
 			IServiceProvider provider = CreateDependencyInjection();
 
@@ -37,7 +37,7 @@ namespace F0.Tests.Reflection
 		}
 
 		[Fact]
-		public void CreateCommandWithConstructorArguments()
+		public void CreateCommandWithParameterizedConstructor()
 		{
 			Func<int> argument = () => 240;
 			IServiceProvider provider = CreateDependencyInjection(argument);
