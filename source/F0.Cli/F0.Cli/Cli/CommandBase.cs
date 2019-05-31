@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace F0.Cli
@@ -9,7 +10,7 @@ namespace F0.Cli
 		{
 		}
 
-		public abstract Task<CommandResult> ExecuteAsync();
+		public abstract Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken);
 
 		protected CommandResult Success()
 		{

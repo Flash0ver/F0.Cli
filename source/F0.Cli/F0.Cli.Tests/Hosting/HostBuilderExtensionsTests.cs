@@ -90,6 +90,18 @@ namespace F0.Tests.Hosting
 		}
 
 		[Fact]
+		public void UseDefault_HostOptions_ShutdownTimeout()
+		{
+			IHostBuilder hostBuilder = new HostBuilder();
+			Assert.Same(hostBuilder, hostBuilder.UseCli(new string[0]));
+			IHost host = hostBuilder.Build();
+
+			TimeSpan timeout = new HostOptions().ShutdownTimeout;
+			IOptions<HostOptions> options = host.Services.GetRequiredService<IOptions<HostOptions>>();
+			Assert.Equal(timeout, options.Value.ShutdownTimeout);
+		}
+
+		[Fact]
 		public void UseSetting()
 		{
 			IHostBuilder hostBuilder = new HostBuilder();

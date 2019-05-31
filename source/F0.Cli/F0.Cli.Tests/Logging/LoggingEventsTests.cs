@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using F0.Logging;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,7 @@ namespace F0.Tests.Logging
 	public class LoggingEventsTests
 	{
 		[Fact]
-		public void EventId_IsUnique()
+		public void EventId_IsUniqueErrorLevel()
 		{
 			var set = new HashSet<int>();
 			foreach (LoggingEventsData data in LoggingEventsData.Data)
@@ -57,14 +58,16 @@ namespace F0.Tests.Logging
 		{
 			return new LoggingEventsData[]
 			{
+				new LoggingEventsData(LoggingEvents.CommandPipelineSuccess, LogLevel.Trace),
+				new LoggingEventsData(LoggingEvents.CommandExecutionCanceled, LogLevel.Information),
 				new LoggingEventsData(LoggingEvents.CommandPipelineFailure, LogLevel.Error),
-				new LoggingEventsData(LoggingEvents.CommandExecutionFailed, LogLevel.Error)
+				new LoggingEventsData(LoggingEvents.CommandExecutionFaulted, LogLevel.Error),
 			};
 		}
 
 		public static IEnumerable<object[]> GetData(bool includeLogLevel)
 		{
-			foreach (LoggingEventsData data in Data)
+			foreach (LoggingEventsData data in Data.Where(d => d.Id != 0))
 			{
 				if (includeLogLevel)
 				{

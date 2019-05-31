@@ -28,24 +28,29 @@ namespace F0.Hosting
 
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
-			CommandResult result = await ExecuteCommandPipelineAsync(context.CommandLineArgs, context.CommandAssembly, provider, reporter);
+			CommandResult result = await ExecuteCommandPipelineAsync(context.CommandLineArgs, context.CommandAssembly, provider, reporter, stoppingToken);
 			context.SetResult(result);
 
 			appLifetime.StopApplication();
 		}
 
-		private static async Task<CommandResult> ExecuteCommandPipelineAsync(ReadOnlyCollection<string> commandLineArguments, Assembly commandAssembly, IServiceProvider provider, IReporter reporter)
+		private static async Task<CommandResult> ExecuteCommandPipelineAsync(ReadOnlyCollection<string> commandLineArguments, Assembly commandAssembly, IServiceProvider provider, IReporter reporter, CancellationToken stoppingToken)
 		{
 			CommandResult result;
 
 			try
 			{
-				result = await RunCommandPipelineAsync(commandLineArguments, commandAssembly, provider);
+				result = await RunCommandPipelineAsync(commandLineArguments, commandAssembly, provider, stoppingToken);
+			}
+			catch (CommandCanceledException exception)
+			{
+				reporter.WriteWarning(exception.Message);
+				result = new CommandResult(LoggingEvents.CommandExecutionCanceled);
 			}
 			catch (CommandExecutionException exception)
 			{
 				reporter.WriteError(exception.InnerException.Message);
-				result = new CommandResult(LoggingEvents.CommandExecutionFailed);
+				result = new CommandResult(LoggingEvents.CommandExecutionFaulted);
 			}
 			catch (Exception exception)
 			{
@@ -56,7 +61,7 @@ namespace F0.Hosting
 			return result;
 		}
 
-		private static async Task<CommandResult> RunCommandPipelineAsync(ReadOnlyCollection<string> commandLineArguments, Assembly commandAssembly, IServiceProvider provider)
+		private static async Task<CommandResult> RunCommandPipelineAsync(ReadOnlyCollection<string> commandLineArguments, Assembly commandAssembly, IServiceProvider provider, CancellationToken stoppingToken)
 		{
 			CommandLineArguments args = CommandLineArgumentsParser.Parse(commandLineArguments);
 
@@ -66,7 +71,7 @@ namespace F0.Hosting
 				CommandArgumentsBinder.BindArguments(instance, args);
 				CommandOptionsBinder.BindOptions(instance, args);
 
-				CommandResult result = await CommandExecutor.InvokeAsync(instance);
+				CommandResult result = await CommandExecutor.InvokeAsync(instance, stoppingToken);
 				return result;
 			}
 		}

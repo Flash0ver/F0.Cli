@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using F0.Cli;
 
 namespace F0.Tests.Commands
@@ -9,7 +10,7 @@ namespace F0.Tests.Commands
 		{
 		}
 
-		public override async Task<CommandResult> ExecuteAsync()
+		public override async Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{
 			await Task.Yield();
 

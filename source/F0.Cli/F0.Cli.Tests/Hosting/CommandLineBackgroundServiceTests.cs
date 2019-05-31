@@ -147,7 +147,7 @@ namespace F0.Tests.Hosting
 			CommandResult result = unit.GetResult();
 			Assert.Equal(LoggingEvents.CommandPipelineFailure, result.ExitCode);
 
-			unit.Reporter.CheckNextError("A suitable constructor for type 'F0.Tests.Commands.InvalidCommand' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.");
+			unit.Reporter.CheckNextError($"A suitable constructor for type '{typeof(InvalidCommand)}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.");
 			unit.CheckCompletion();
 		}
 
@@ -161,7 +161,7 @@ namespace F0.Tests.Hosting
 			CommandResult result = unit.GetResult();
 			Assert.Equal(LoggingEvents.CommandPipelineFailure, result.ExitCode);
 
-			unit.Reporter.CheckNextError("No bindable Arguments property defined by the Command type 'F0.Tests.Commands.NullCommand'.");
+			unit.Reporter.CheckNextError($"No bindable Arguments property defined by the Command type '{typeof(NullCommand)}'.");
 			unit.CheckCompletion();
 		}
 
@@ -175,21 +175,68 @@ namespace F0.Tests.Hosting
 			CommandResult result = unit.GetResult();
 			Assert.Equal(LoggingEvents.CommandPipelineFailure, result.ExitCode);
 
-			unit.Reporter.CheckNextError("Bindable Option 'option' not defined by the Command type 'F0.Tests.Commands.NullCommand'.");
+			unit.Reporter.CheckNextError($"Bindable Option 'option' not defined by the Command type '{typeof(NullCommand)}'.");
 			unit.CheckCompletion();
 		}
 
 		[Fact]
-		public async Task RunCommandPipeline_CommandCannotBeExecuted()
+		public async Task RunCommandPipeline_Cancellation_CanceledCommand_Synchronous()
 		{
-			var unit = new CommandLineBackgroundServiceUnit("error");
+			var unit = new CommandLineBackgroundServiceUnit("cancellation");
+
+			await unit.RunAsync(new CancellationToken(true));
+
+			CommandResult result = unit.GetResult();
+			Assert.Equal(LoggingEvents.CommandExecutionCanceled, result.ExitCode);
+
+			unit.Reporter.CheckNextWarning($"The command '{nameof(CancellationCommand)}' was canceled.");
+			unit.CheckCompletion();
+		}
+
+		[Fact]
+		public async Task RunCommandPipeline_Cancellation_CanceledCommand_Asynchronous()
+		{
+			var unit = new CommandLineBackgroundServiceUnit("cancel");
+
+			await unit.RunAsync(new CancellationToken(true));
+
+			CommandResult result = unit.GetResult();
+			Assert.Equal(LoggingEvents.CommandExecutionCanceled, result.ExitCode);
+
+			unit.Reporter.CheckNextWarning($"The command '{nameof(CancelCommand)}' was canceled.");
+			unit.CheckCompletion();
+		}
+
+		[Fact]
+		public async Task RunCommandPipeline_Cancellation_GracefulTermination_InResponseToCancellationRequest()
+		{
+			var unit = new CommandLineBackgroundServiceUnit("longrunning");
+
+			var cts = new CancellationTokenSource();
+			Task task = unit.RunAsync(cts.Token);
+
+			unit.Reporter.CheckEmpty();
+
+			cts.Cancel();
+			await task;
+
+			CommandResult result = unit.GetResult();
+			Assert.Equal(0, result.ExitCode);
+
+			unit.CheckCompletion();
+		}
+
+		[Fact]
+		public async Task RunCommandPipeline_CommandThrowsException()
+		{
+			var unit = new CommandLineBackgroundServiceUnit("exception");
 
 			await unit.RunAsync();
 
 			CommandResult result = unit.GetResult();
-			Assert.Equal(LoggingEvents.CommandExecutionFailed, result.ExitCode);
+			Assert.Equal(LoggingEvents.CommandExecutionFaulted, result.ExitCode);
 
-			unit.Reporter.CheckNextError("Operation is not valid due to the current state of the object.");
+			unit.Reporter.CheckNextError("An exceptional situation has occurred.");
 			unit.CheckCompletion();
 		}
 	}
@@ -236,13 +283,13 @@ namespace F0.Tests.Hosting
 		internal TestReporter Reporter { get; }
 		internal int StopCount { get; private set; }
 
-		internal async Task RunAsync()
+		internal async Task RunAsync(CancellationToken cancellationToken = default)
 		{
-			await hostedService.StartAsync(CancellationToken.None);
+			await ExecuteAsync(hostedService, cancellationToken);
 
 			Task<bool> task = commandPipelineOperation.Task;
-			TimeSpan timeout = new HostOptions().ShutdownTimeout;
-			if (await Task.WhenAny(task, Task.Delay(timeout)) != task)
+			var timeout = TimeSpan.FromMilliseconds(100);
+			if (await Task.WhenAny(task, Task.Delay(timeout, cancellationToken)) != task)
 			{
 				throw new TimeoutException();
 			}
@@ -256,6 +303,18 @@ namespace F0.Tests.Hosting
 		internal void CheckCompletion()
 		{
 			Reporter.CheckEmpty();
+		}
+
+		private static Task ExecuteAsync(IHostedService hostedService, CancellationToken cancellationToken)
+		{
+			//Microsoft.Extensions.Hosting.BackgroundService.ExecuteAsync
+
+			Type type = hostedService.GetType();
+			MethodInfo mi = type.GetMethod("ExecuteAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+
+			object value = mi.Invoke(hostedService, new object[] { cancellationToken });
+			var task = value as Task;
+			return task;
 		}
 	}
 

@@ -5,15 +5,17 @@ using F0.Cli;
 
 namespace F0.Tests.Commands
 {
-	public sealed class DerivedCommand : BaseCommand
+	public sealed class CancellationCommand : CommandBase
 	{
-		public DerivedCommand()
+		public CancellationCommand()
 		{
 		}
 
 		public override Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{
-			throw new NotSupportedException();
+			cancellationToken.ThrowIfCancellationRequested();
+
+			throw new InvalidOperationException("Cancellation has not been requested.");
 		}
 	}
 }

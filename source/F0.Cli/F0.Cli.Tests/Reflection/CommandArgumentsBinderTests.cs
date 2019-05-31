@@ -62,7 +62,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void PropertyMustHaveCompatibleTypeToBeBoundAgainst()
 		{
-			var command = new ErrorCommand();
+			var command = new InvalidCommand();
 			CommandLineArguments args = CreateArgs("F0");
 
 			Assert.Throws<UnsupportedCommandArgumentsTypeException>(() => CommandArgumentsBinder.BindArguments(command, args));

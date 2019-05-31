@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using F0.Cli;
 
@@ -16,7 +17,7 @@ namespace F0.Tests.Commands
 			dependency.TraceCall();
 		}
 
-		public override Task<CommandResult> ExecuteAsync()
+		public override Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{
 			dependency.TraceCall();
 

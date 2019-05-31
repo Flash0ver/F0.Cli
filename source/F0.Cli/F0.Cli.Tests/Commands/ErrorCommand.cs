@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using F0.Cli;
 
@@ -10,13 +10,9 @@ namespace F0.Tests.Commands
 		{
 		}
 
-		public int Args { get; set; }
-
-		public override async Task<CommandResult> ExecuteAsync()
+		public override Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{
-			await Task.Yield();
-
-			throw new InvalidOperationException();
+			return Task.FromResult(Error());
 		}
 	}
 }

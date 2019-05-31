@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -18,13 +19,13 @@ namespace F0.Cli.Example.Http
 			this.client = client;
 		}
 
-		async Task<string> INuGetClient.GetByAuthorAsync(string author)
+		async Task<string> INuGetClient.GetByAuthorAsync(string author, CancellationToken cancellationToken)
 		{
 			JObject json;
 
-			using (HttpResponseMessage response = await client.GetAsync($"query?q=author:{author}"))
+			using (HttpResponseMessage response = await client.GetAsync($"query?q=author:{author}", cancellationToken))
 			{
-				json = await response.Content.ReadAsAsync<JObject>();
+				json = await response.Content.ReadAsAsync<JObject>(cancellationToken);
 			}
 
 			var text = new StringBuilder();
@@ -42,13 +43,13 @@ namespace F0.Cli.Example.Http
 			return text.ToString();
 		}
 
-		async Task<string> INuGetClient.GetByIdAsync(string id)
+		async Task<string> INuGetClient.GetByIdAsync(string id, CancellationToken cancellationToken)
 		{
 			JObject json;
 
-			using (HttpResponseMessage response = await client.GetAsync($"query?q=PackageId:{id}"))
+			using (HttpResponseMessage response = await client.GetAsync($"query?q=PackageId:{id}", cancellationToken))
 			{
-				json = await response.Content.ReadAsAsync<JObject>();
+				json = await response.Content.ReadAsAsync<JObject>(cancellationToken);
 			}
 
 			JToken package = json["data"].Single();

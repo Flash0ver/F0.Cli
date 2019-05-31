@@ -4,9 +4,9 @@ using F0.Cli;
 
 namespace F0.Tests.Commands
 {
-	public sealed class NullCommand : CommandBase
+	public sealed class SuccessCommand : CommandBase
 	{
-		public NullCommand()
+		public SuccessCommand()
 		{
 		}
 

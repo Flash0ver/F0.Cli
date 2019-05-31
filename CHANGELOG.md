@@ -2,6 +2,7 @@
 CHANGELOG
 
 ## vNext
+- Added cancellation of commands through the host's lifetime.
 
 ## v0.1.0 (2019-04-21)
 - Added command-based programming model with support for dependency injection, arguments binding, options binding, exit code communication.

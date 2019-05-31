@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using F0.Cli.Example.Http;
 using F0.IO;
@@ -23,7 +24,7 @@ namespace F0.Cli.Example.Commands
 
 		public string Author { get; set; }
 
-		public override async Task<CommandResult> ExecuteAsync()
+		public override async Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{
 			reporter.WriteInfo($"Executing {nameof(PackageCommand)}");
 			reporter.WriteInfo($"Arguments: {String.Join(", ", Arguments)}");
@@ -32,7 +33,7 @@ namespace F0.Cli.Example.Commands
 
 			if (!(Author is null))
 			{
-				string info = await nuGetService.GetByAuthorAsync(Author);
+				string info = await nuGetService.GetByAuthorAsync(Author, cancellationToken);
 				reporter.WriteInfo(info);
 			}
 
@@ -40,7 +41,7 @@ namespace F0.Cli.Example.Commands
 
 			foreach (string argument in Arguments)
 			{
-				string package = await nuGetService.GetByIdAsync(argument);
+				string package = await nuGetService.GetByIdAsync(argument, cancellationToken);
 				reporter.WriteInfo($"- {package}");
 			}
 

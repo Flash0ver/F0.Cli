@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using F0.Cli.Example.Http;
 using F0.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +9,7 @@ namespace F0.Cli.Example
 {
 	internal static class Program
 	{
-		private static int Main(string[] args)
+		private static async Task<int> Main(string[] args)
 		{
 			Console.WriteLine("F0.Cli");
 			Console.WriteLine();
@@ -20,7 +21,7 @@ namespace F0.Cli.Example
 
 			Console.WriteLine($"command-line arguments {args.Length}: {String.Join(' ', args)}");
 
-			int exitCode = CreateHostBuilder(args).Build().RunCli();
+			int exitCode = await CreateHostBuilder(args).Build().RunCliAsync();
 
 			Console.WriteLine();
 			string consoleAppName = AppDomain.CurrentDomain.FriendlyName;
@@ -34,7 +35,7 @@ namespace F0.Cli.Example
 		{
 			var builder = new HostBuilder();
 			builder.UseAssemblyAttributes();
-			builder.ConfigureServices((hostingContext, services) =>
+			builder.ConfigureServices((hostContext, services) =>
 			{
 				services.AddHttpClient<INuGetClient, NuGetClient>();
 			});
