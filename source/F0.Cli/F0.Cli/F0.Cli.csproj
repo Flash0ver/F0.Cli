@@ -10,7 +10,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageId>F0.Cli</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>Flash0ver</Authors>
     <Company>f[0]</Company>
     <Product>F0.Cli</Product>
@@ -22,7 +22,7 @@
     <RepositoryUrl>https://github.com/Flash0ver/F0.Cli.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>f[0] f0 cli</PackageTags>
-    <PackageReleaseNotes>Initial upload providing a basic command-line interface framework intended for apps and tools based on Generic Host.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added command cancellation.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

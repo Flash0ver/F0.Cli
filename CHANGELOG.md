@@ -2,6 +2,8 @@
 CHANGELOG
 
 ## vNext
+
+## v0.2.0 (2019-05-31)
 - Added cancellation of commands through the host's lifetime.
 
 ## v0.1.0 (2019-04-21)
