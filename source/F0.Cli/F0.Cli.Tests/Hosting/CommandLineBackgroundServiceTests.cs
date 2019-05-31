@@ -288,7 +288,7 @@ namespace F0.Tests.Hosting
 			await ExecuteAsync(hostedService, cancellationToken);
 
 			Task<bool> task = commandPipelineOperation.Task;
-			var timeout = TimeSpan.FromMilliseconds(100);
+			TimeSpan timeout = TimeSpan.FromMilliseconds(100);
 			if (await Task.WhenAny(task, Task.Delay(timeout, cancellationToken)) != task)
 			{
 				throw new TimeoutException();
