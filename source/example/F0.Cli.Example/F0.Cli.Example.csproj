@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\source\F0.Cli\F0.Cli\F0.Cli.csproj" />
+    <ProjectReference Include="..\..\production\F0.Cli\F0.Cli.csproj" />
   </ItemGroup>
 
   <ItemGroup>
