@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using F0.Cli.Example.Http;
@@ -29,6 +30,11 @@ namespace F0.Cli.Example.Commands
 
 		public override async Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{
+			if (Arguments is null)
+			{
+				Arguments = Enumerable.Empty<string>();
+			}
+
 			reporter.WriteInfo($"Executing {nameof(PackageCommand)}");
 			reporter.WriteInfo($"Arguments: {String.Join(", ", Arguments)}");
 			reporter.WriteInfo($"Option {nameof(Author)}: {Author ?? "<null>"}");
