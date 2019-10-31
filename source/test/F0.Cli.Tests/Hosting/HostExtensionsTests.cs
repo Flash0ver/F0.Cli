@@ -69,10 +69,10 @@ namespace F0.Tests.Hosting
 
 	internal sealed class TestHostedService : IHostedService
 	{
-		private readonly IApplicationLifetime appLifetime;
+		private readonly IHostApplicationLifetime appLifetime;
 		private readonly CommandContext context;
 
-		public TestHostedService(IApplicationLifetime appLifetime, CommandContext context)
+		public TestHostedService(IHostApplicationLifetime appLifetime, CommandContext context)
 		{
 			this.appLifetime = appLifetime;
 			this.context = context;

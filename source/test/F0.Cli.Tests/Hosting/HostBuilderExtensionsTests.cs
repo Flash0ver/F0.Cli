@@ -23,11 +23,11 @@ namespace F0.Tests.Hosting
 
 			Assembly assembly = Assembly.GetEntryAssembly();
 			IHost host = hostBuilder.Build();
-			IHostingEnvironment environment = host.Services.GetRequiredService<IHostingEnvironment>();
+			IHostEnvironment environment = host.Services.GetRequiredService<IHostEnvironment>();
 
 			AssemblyConfigurationAttribute configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
 			Assert.Equal("", configuration.Configuration);
-			Assert.Equal(EnvironmentName.Staging, environment.EnvironmentName);
+			Assert.Equal(Environments.Staging, environment.EnvironmentName);
 
 			AssemblyProductAttribute product = assembly.GetCustomAttribute<AssemblyProductAttribute>();
 			Assert.Contains("Test", product.Product);
@@ -47,8 +47,8 @@ namespace F0.Tests.Hosting
 			AssemblyConfigurationAttribute configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
 			Assert.True(configuration.Configuration == "Debug" || configuration.Configuration == "Release");
 
-			IHostingEnvironment environment = host.Services.GetRequiredService<IHostingEnvironment>();
-			string environmentName = configuration.Configuration == "Debug" ? EnvironmentName.Development : EnvironmentName.Production;
+			IHostEnvironment environment = host.Services.GetRequiredService<IHostEnvironment>();
+			string environmentName = configuration.Configuration == "Debug" ? Environments.Development : Environments.Production;
 			Assert.Equal(environmentName, environment.EnvironmentName);
 		}
 
@@ -65,7 +65,7 @@ namespace F0.Tests.Hosting
 			AssemblyProductAttribute product = assembly.GetCustomAttribute<AssemblyProductAttribute>();
 			Assert.Equal("F0.Cli.Tests", product.Product);
 
-			IHostingEnvironment environment = host.Services.GetRequiredService<IHostingEnvironment>();
+			IHostEnvironment environment = host.Services.GetRequiredService<IHostEnvironment>();
 			Assert.Equal("F0.Cli.Tests", environment.ApplicationName);
 		}
 

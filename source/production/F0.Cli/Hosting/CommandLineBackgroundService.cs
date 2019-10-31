@@ -14,11 +14,11 @@ namespace F0.Hosting
 	internal sealed class CommandLineBackgroundService : BackgroundService
 	{
 		private readonly IServiceProvider provider;
-		private readonly IApplicationLifetime appLifetime;
+		private readonly IHostApplicationLifetime appLifetime;
 		private readonly CommandContext context;
 		private readonly IReporter reporter;
 
-		public CommandLineBackgroundService(IServiceProvider provider, IApplicationLifetime appLifetime, CommandContext context, IReporter reporter)
+		public CommandLineBackgroundService(IServiceProvider provider, IHostApplicationLifetime appLifetime, CommandContext context, IReporter reporter)
 		{
 			this.provider = provider;
 			this.appLifetime = appLifetime;

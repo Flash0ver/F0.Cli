@@ -40,7 +40,7 @@ namespace F0.Tests.DependencyInjection
 
 			ServiceDescriptor backgroundService = services.Single(d => d.ImplementationType == typeof(CommandLineBackgroundService));
 			Assert.Equal(typeof(IHostedService), backgroundService.ServiceType);
-			Assert.Equal(ServiceLifetime.Transient, backgroundService.Lifetime);
+			Assert.Equal(ServiceLifetime.Singleton, backgroundService.Lifetime);
 		}
 	}
 }

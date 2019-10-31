@@ -27,13 +27,13 @@ namespace F0.Hosting
 			switch (configuration.Configuration)
 			{
 				case "Debug":
-					environment = EnvironmentName.Development;
+					environment = Environments.Development;
 					break;
 				case "Release":
-					environment = EnvironmentName.Production;
+					environment = Environments.Production;
 					break;
 				default:
-					environment = EnvironmentName.Staging;
+					environment = Environments.Staging;
 					break;
 			}
 

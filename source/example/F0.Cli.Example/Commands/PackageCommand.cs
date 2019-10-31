@@ -11,11 +11,11 @@ namespace F0.Cli.Example.Commands
 {
 	public sealed class PackageCommand : CommandBase
 	{
-		private readonly IHostingEnvironment environment;
+		private readonly IHostEnvironment environment;
 		private readonly IReporter reporter;
 		private readonly INuGetClient nuGetService;
 
-		public PackageCommand(IHostingEnvironment env, IReporter reporter, INuGetClient nuGetService)
+		public PackageCommand(IHostEnvironment env, IReporter reporter, INuGetClient nuGetService)
 		{
 			reporter.WriteInfo($"Creating {nameof(PackageCommand)}");
 

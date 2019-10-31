@@ -267,7 +267,7 @@ namespace F0.Tests.Hosting
 			IServiceProviderFactory<IServiceCollection> factory = new DefaultServiceProviderFactory();
 			IServiceProvider provider = factory.CreateServiceProvider(collection);
 
-			IApplicationLifetime appLifetime = new TestApplicationLifetime(() =>
+			IHostApplicationLifetime appLifetime = new TestApplicationLifetime(() =>
 			{
 				StopCount++;
 				commandPipelineOperation.SetResult(true);
@@ -318,7 +318,7 @@ namespace F0.Tests.Hosting
 		}
 	}
 
-	internal sealed class TestApplicationLifetime : IApplicationLifetime
+	internal sealed class TestApplicationLifetime : IHostApplicationLifetime
 	{
 		private readonly Action onStopping;
 
@@ -327,11 +327,11 @@ namespace F0.Tests.Hosting
 			this.onStopping = onStopping;
 		}
 
-		CancellationToken IApplicationLifetime.ApplicationStarted { get; }
-		CancellationToken IApplicationLifetime.ApplicationStopping { get; }
-		CancellationToken IApplicationLifetime.ApplicationStopped { get; }
+		CancellationToken IHostApplicationLifetime.ApplicationStarted { get; }
+		CancellationToken IHostApplicationLifetime.ApplicationStopping { get; }
+		CancellationToken IHostApplicationLifetime.ApplicationStopped { get; }
 
-		void IApplicationLifetime.StopApplication()
+		void IHostApplicationLifetime.StopApplication()
 		{
 			onStopping();
 		}
