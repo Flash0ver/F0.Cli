@@ -2,6 +2,8 @@
 CHANGELOG
 
 ## vNext
+
+## v0.3.0 (2019-10-31)
 - Updated dependency on Generic Host from `Microsoft.Extensions.Hosting 2.2.0` to `Microsoft.Extensions.Hosting 3.0.0`.
 
 ## v0.2.0 (2019-05-31)
