@@ -93,7 +93,7 @@ namespace F0.Tests.Hosting
 		public void UseDefault_HostOptions_ShutdownTimeout()
 		{
 			IHostBuilder hostBuilder = new HostBuilder();
-			Assert.Same(hostBuilder, hostBuilder.UseCli(new string[0]));
+			Assert.Same(hostBuilder, hostBuilder.UseCli(Array.Empty<string>()));
 			IHost host = hostBuilder.Build();
 
 			TimeSpan timeout = new HostOptions().ShutdownTimeout;

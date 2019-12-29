@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using F0.Cli;
 using F0.DependencyInjection;
 using F0.Hosting;
@@ -17,14 +18,14 @@ namespace F0.Tests.DependencyInjection
 		{
 			IServiceCollection services = new ServiceCollection();
 
-			Assert.Same(services, services.AddCli(new string[] { }));
+			Assert.Same(services, services.AddCli(Array.Empty<string>()));
 		}
 
 		[Fact]
 		public void ConfigureServices()
 		{
 			IServiceCollection services = new ServiceCollection();
-			services.AddCli(new string[] { });
+			services.AddCli(Array.Empty<string>());
 
 			ServiceDescriptor lifetime = services.Single(d => d.ServiceType == typeof(IConfigureOptions<ConsoleLifetimeOptions>));
 			Assert.Null(lifetime.ImplementationType);
