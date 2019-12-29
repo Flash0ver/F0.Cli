@@ -22,20 +22,12 @@ namespace F0.Hosting
 		{
 			AssemblyConfigurationAttribute configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
 
-			string environment;
-
-			switch (configuration.Configuration)
+			string environment = configuration.Configuration switch
 			{
-				case "Debug":
-					environment = Environments.Development;
-					break;
-				case "Release":
-					environment = Environments.Production;
-					break;
-				default:
-					environment = Environments.Staging;
-					break;
-			}
+				"Debug" => Environments.Development,
+				"Release" => Environments.Production,
+				_ => Environments.Staging,
+			};
 
 			return hostBuilder.UseEnvironment(environment);
 		}

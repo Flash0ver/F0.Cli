@@ -64,16 +64,14 @@ namespace F0.Hosting
 		private static async Task<CommandResult> RunCommandPipelineAsync(ReadOnlyCollection<string> commandLineArguments, Assembly commandAssembly, IServiceProvider provider, CancellationToken stoppingToken)
 		{
 			CommandLineArguments args = CommandLineArgumentsParser.Parse(commandLineArguments);
-
 			Type type = CommandSelector.SelectCommand(commandAssembly, args);
-			using (CommandBase instance = CommandActivator.ConstructCommand(provider, type))
-			{
-				CommandArgumentsBinder.BindArguments(instance, args);
-				CommandOptionsBinder.BindOptions(instance, args);
 
-				CommandResult result = await CommandExecutor.InvokeAsync(instance, stoppingToken);
-				return result;
-			}
+			using CommandBase instance = CommandActivator.ConstructCommand(provider, type);
+			CommandArgumentsBinder.BindArguments(instance, args);
+			CommandOptionsBinder.BindOptions(instance, args);
+
+			CommandResult result = await CommandExecutor.InvokeAsync(instance, stoppingToken);
+			return result;
 		}
 	}
 }

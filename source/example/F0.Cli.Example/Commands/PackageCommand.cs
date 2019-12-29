@@ -30,10 +30,7 @@ namespace F0.Cli.Example.Commands
 
 		public override async Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{
-			if (Arguments is null)
-			{
-				Arguments = Enumerable.Empty<string>();
-			}
+			Arguments ??= Enumerable.Empty<string>();
 
 			reporter.WriteInfo($"Executing {nameof(PackageCommand)}");
 			reporter.WriteInfo($"Arguments: {String.Join(", ", Arguments)}");
