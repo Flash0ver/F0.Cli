@@ -1,10 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 
 namespace F0.Cli.Example.Http
 {
@@ -21,22 +22,26 @@ namespace F0.Cli.Example.Http
 
 		async Task<string> INuGetClient.GetByAuthorAsync(string author, CancellationToken cancellationToken)
 		{
-			JObject json;
-
-			using (HttpResponseMessage response = await client.GetAsync($"query?q=author:{author}", cancellationToken))
-			{
-				json = await response.Content.ReadAsAsync<JObject>(cancellationToken);
-			}
+			using HttpResponseMessage response = await client.GetAsync($"query?q=author:{author}", cancellationToken);
+			using Stream json = await response.Content.ReadAsStreamAsync();
+			using JsonDocument document = await JsonDocument.ParseAsync(json, default, cancellationToken);
+			JsonElement root = document.RootElement;
 
 			var text = new StringBuilder();
 
-			text.AppendLine($"{json["totalHits"]} packages by {author}:");
+			int totalHits = root.GetProperty("totalHits").GetInt32();
+			text.AppendLine($"{totalHits} packages by {author}:");
 
 			int downloads = 0;
-			foreach (JToken package in json["data"])
+			JsonElement.ArrayEnumerator data = root.GetProperty("data").EnumerateArray();
+			foreach (JsonElement package in data)
 			{
-				text.AppendLine($"* {package["id"]} ({package["@type"]}) - {package["totalDownloads"]} downloads");
-				downloads += Int32.Parse(package["totalDownloads"].ToString());
+				string id = package.GetProperty("id").GetString();
+				string type = package.GetProperty("@type").GetString();
+				int totalDownloads = package.GetProperty("totalDownloads").GetInt32();
+
+				text.AppendLine($"* {id} ({type}) - {totalDownloads} downloads");
+				downloads += totalDownloads;
 			}
 			text.Append($"Total downloads of packages: {downloads}");
 
@@ -45,23 +50,37 @@ namespace F0.Cli.Example.Http
 
 		async Task<string> INuGetClient.GetByIdAsync(string id, CancellationToken cancellationToken)
 		{
-			JObject json;
-
-			using (HttpResponseMessage response = await client.GetAsync($"query?q=PackageId:{id}", cancellationToken))
-			{
-				json = await response.Content.ReadAsAsync<JObject>(cancellationToken);
-			}
-
-			JToken package = json["data"].Single();
+			using HttpResponseMessage response = await client.GetAsync($"query?q=PackageId:{id}", cancellationToken);
+			using Stream json = await response.Content.ReadAsStreamAsync();
+			using JsonDocument document = await JsonDocument.ParseAsync(json, default, cancellationToken);
+			JsonElement root = document.RootElement;
 
 			var text = new StringBuilder();
 
-			text.Append($"{package["title"]} ({package["@type"]}) [{String.Join(", ", package["tags"])}]");
-			text.Append($" | {package["description"]}");
-			foreach (JToken version in package["versions"])
+			int totalHits = root.GetProperty("totalHits").GetInt32();
+			if (totalHits != 1)
 			{
+				string message = $"Package '{id}' not found.";
+				throw new InvalidOperationException(message);
+			}
+
+			JsonElement.ArrayEnumerator data = root.GetProperty("data").EnumerateArray();
+			JsonElement package = data.Single();
+
+			string title = package.GetProperty("title").GetString();
+			string type = package.GetProperty("@type").GetString();
+			JsonElement.ArrayEnumerator tags = package.GetProperty("tags").EnumerateArray();
+			string description = package.GetProperty("description").GetString();
+			text.Append($"{title} ({type}) [{String.Join(", ", tags)}] | {description}");
+
+			JsonElement.ArrayEnumerator versions = package.GetProperty("versions").EnumerateArray();
+			foreach (JsonElement version in versions)
+			{
+				string v = version.GetProperty("version").GetString();
+				int downloads = version.GetProperty("downloads").GetInt32();
+
 				text.AppendLine();
-				text.Append($"  - {version["version"]} / {version["downloads"]} downloads");
+				text.Append($"  - {v} / {downloads} downloads");
 			}
 
 			return text.ToString();
