@@ -10,7 +10,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageId>F0.Cli</PackageId>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
     <Authors>Flash0ver</Authors>
     <Company>f[0]</Company>
     <Product>F0.Cli</Product>
@@ -22,7 +22,7 @@
     <RepositoryUrl>https://github.com/Flash0ver/F0.Cli.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>f[0] f0 cli</PackageTags>
-    <PackageReleaseNotes>Updated dependency on Generic Host to Microsoft.Extensions.Hosting 3.0.0.</PackageReleaseNotes>
+    <PackageReleaseNotes>Updated dependency on Generic Host to Microsoft.Extensions.Hosting 3.1.0.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
