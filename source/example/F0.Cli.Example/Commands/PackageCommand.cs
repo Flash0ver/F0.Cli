@@ -42,7 +42,7 @@ namespace F0.Cli.Example.Commands
 			reporter.WriteInfo($"Content root path: {environment.ContentRootPath}");
 			reporter.WriteLine();
 
-			if (!(Author is null))
+			if (Author is { })
 			{
 				string info = await nuGetService.GetByAuthorAsync(Author, cancellationToken);
 				reporter.WriteInfo(info);

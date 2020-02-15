@@ -10,12 +10,9 @@ namespace F0.Cli
 
 		internal CommandContext(string[] args, Assembly commandAssembly)
 		{
-			if (args is null)
-			{
-				throw new ArgumentNullException(nameof(args));
-			}
-
-			CommandLineArgs = Array.AsReadOnly(args);
+			CommandLineArgs = args is null
+				? throw new ArgumentNullException(nameof(args))
+				: Array.AsReadOnly(args);
 			CommandAssembly = commandAssembly ?? throw new ArgumentNullException(nameof(commandAssembly));
 		}
 
@@ -24,17 +21,12 @@ namespace F0.Cli
 
 		internal CommandResult GetResult()
 		{
-			if (result is null)
-			{
-				throw new InvalidOperationException("Result not set.");
-			}
-
-			return result;
+			return result ?? throw new InvalidOperationException("Result not set.");
 		}
 
 		internal void SetResult(CommandResult result)
 		{
-			if (!(this.result is null))
+			if (this.result is { })
 			{
 				throw new InvalidOperationException("Result already set.");
 			}
