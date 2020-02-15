@@ -14,14 +14,15 @@ namespace F0.Tests.Commands
 		{
 			var tcs = new TaskCompletionSource<object>();
 
-			CancellationTokenRegistration ctr = cancellationToken.Register(state =>
+#if !NETCOREAPP2_1
+			await
+#endif
+			using CancellationTokenRegistration ctr = cancellationToken.Register(state =>
 			{
-				((TaskCompletionSource<object>)state).TrySetResult(null);
+				_ = ((TaskCompletionSource<object>)state).TrySetResult(null);
 			}, tcs);
 
-			await tcs.Task;
-
-			ctr.Dispose();
+			_ = await tcs.Task;
 
 			return Success();
 		}

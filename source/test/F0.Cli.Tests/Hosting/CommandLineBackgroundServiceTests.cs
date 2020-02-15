@@ -212,7 +212,7 @@ namespace F0.Tests.Hosting
 		{
 			var unit = new CommandLineBackgroundServiceUnit("longrunning");
 
-			var cts = new CancellationTokenSource();
+			using var cts = new CancellationTokenSource();
 			Task task = unit.RunAsync(cts.Token);
 
 			unit.Reporter.CheckEmpty();
