@@ -20,9 +20,9 @@ namespace F0.Cli.Example.Http
 			this.client = client;
 		}
 
-		async Task<string> INuGetClient.GetByAuthorAsync(string author, CancellationToken cancellationToken)
+		async Task<string> INuGetClient.GetByOwnerAsync(string owner, CancellationToken cancellationToken)
 		{
-			using HttpResponseMessage response = await client.GetAsync($"query?q=author:{author}", cancellationToken);
+			using HttpResponseMessage response = await client.GetAsync($"query?q=owner:{owner}", cancellationToken);
 			using Stream json = await response.Content.ReadAsStreamAsync();
 			using JsonDocument document = await JsonDocument.ParseAsync(json, default, cancellationToken);
 			JsonElement root = document.RootElement;
@@ -30,7 +30,7 @@ namespace F0.Cli.Example.Http
 			var text = new StringBuilder();
 
 			int totalHits = root.GetProperty("totalHits").GetInt32();
-			text.AppendLine($"{totalHits} packages by {author}:");
+			text.AppendLine($"{totalHits} packages by {owner}:");
 
 			int downloads = 0;
 			JsonElement.ArrayEnumerator data = root.GetProperty("data").EnumerateArray();

@@ -16,7 +16,7 @@ namespace F0.Cli.Example
 
 			if (args.Length == 0)
 			{
-				args = new string[] { "package", "F0.Cli", "--author", "Flash0ver" };
+				args = new string[] { "package", "F0.Cli", "--owner", "Flash0ver" };
 			}
 
 			Console.WriteLine($"command-line arguments {args.Length}: {String.Join(' ', args)}");

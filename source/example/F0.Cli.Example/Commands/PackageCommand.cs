@@ -26,7 +26,7 @@ namespace F0.Cli.Example.Commands
 
 		public IEnumerable<string> Arguments { get; set; }
 
-		public string Author { get; set; }
+		public string Owner { get; set; }
 
 		public override async Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{
@@ -34,7 +34,7 @@ namespace F0.Cli.Example.Commands
 
 			reporter.WriteInfo($"Executing {nameof(PackageCommand)}");
 			reporter.WriteInfo($"Arguments: {String.Join(", ", Arguments)}");
-			reporter.WriteInfo($"Option {nameof(Author)}: {Author ?? "<null>"}");
+			reporter.WriteInfo($"Option {nameof(Owner)}: {Owner ?? "<null>"}");
 			reporter.WriteLine();
 
 			reporter.WriteInfo($"Hosting environment: {environment.EnvironmentName}");
@@ -42,9 +42,9 @@ namespace F0.Cli.Example.Commands
 			reporter.WriteInfo($"Content root path: {environment.ContentRootPath}");
 			reporter.WriteLine();
 
-			if (Author is { })
+			if (Owner is { })
 			{
-				string info = await nuGetService.GetByAuthorAsync(Author, cancellationToken);
+				string info = await nuGetService.GetByOwnerAsync(Owner, cancellationToken);
 				reporter.WriteInfo(info);
 			}
 
