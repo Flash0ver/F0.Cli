@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using F0.IO;
 
-namespace F0.Tests.IO
+namespace F0.Tests.Shared
 {
 	internal sealed class TestReporter : IReporter
 	{
