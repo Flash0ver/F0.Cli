@@ -1,6 +1,8 @@
 # F0.Cli
 This repo comprises utilities for testable command-line interface tools.
 
+![F0.Cli](https://raw.githubusercontent.com/Flash0ver/F0/master/Branding/GitHub/F0.Cli.png)
+
 [![F0.Cli on fuget.org](https://www.fuget.org/packages/F0.Cli/badge.svg)](https://www.fuget.org/packages/F0.Cli)
 
 ## NuGet
