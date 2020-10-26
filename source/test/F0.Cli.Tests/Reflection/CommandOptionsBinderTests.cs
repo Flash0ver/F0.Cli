@@ -22,30 +22,30 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void OptionsWithoutValuesAreBoundToBooleanPropertiesWherePropertyNameMatchesOptionKey()
 		{
-			var command = new TestCommand();
-			CommandLineArguments args = CreateArgs("option1", null);
+			var command = new LogicalCommand();
+			CommandLineArguments args = CreateArgs("switch", null);
 
+			Assert.False(command.Switch);
 			CommandOptionsBinder.BindOptions(command, args);
-			Assert.True(command.Option1);
-			Assert.Null(command.Option2);
+			Assert.True(command.Switch);
 		}
 
 		[Fact]
-		public void OptionsWithValuesAreBoundToStringPropertiesWherePropertyNameMatchesOptionKey()
+		public void OptionsWithValuesMayBeBoundToStringPropertiesWherePropertyNameMatchesOptionKey()
 		{
-			var command = new TestCommand();
-			CommandLineArguments args = CreateArgs("option2", "string");
+			var command = new TextCommand();
+			CommandLineArguments args = CreateArgs("text", "string");
 
+			Assert.Null(command.Text);
 			CommandOptionsBinder.BindOptions(command, args);
-			Assert.False(command.Option1);
-			Assert.Equal("string", command.Option2);
+			Assert.Equal("string", command.Text);
 		}
 
 		[Fact]
 		public void BooleanPropertiesAreBoundAgainstOptionsWithoutValues()
 		{
-			var command = new TestCommand();
-			CommandLineArguments args = CreateArgs("option1", "bool");
+			var command = new LogicalCommand();
+			CommandLineArguments args = CreateArgs("switch", "bool");
 
 			Assert.Throws<UnsupportedCommandOptionTypeException>(() => CommandOptionsBinder.BindOptions(command, args));
 		}
@@ -53,8 +53,8 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void StringPropertiesAreBoundAgainstOptionsWithValues()
 		{
-			var command = new TestCommand();
-			CommandLineArguments args = CreateArgs("option2", null);
+			var command = new TextCommand();
+			CommandLineArguments args = CreateArgs("text", null);
 
 			Assert.Throws<InvalidCommandSwitchException>(() => CommandOptionsBinder.BindOptions(command, args));
 		}
