@@ -1,2 +1,7 @@
 <Project>
+
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), 3.0))">
+    <DefineConstants>$(DefineConstants);IS_IEEE_754_2008_COMPLIANT</DefineConstants>
+  </PropertyGroup>
+
 </Project>

@@ -86,9 +86,55 @@ namespace F0.Cli.Example.Http
 			return text.ToString();
 		}
 
+		async Task<string> INuGetClient.GetByTagAsync(string tag, int skip, int take, CancellationToken cancellationToken)
+		{
+			using HttpResponseMessage response = await client.GetAsync(BuildSearchQuery($"tag:{tag}", skip, take), cancellationToken);
+			using Stream json = await response.Content.ReadAsStreamAsync();
+			using JsonDocument document = await JsonDocument.ParseAsync(json, default, cancellationToken);
+			JsonElement root = document.RootElement;
+
+			var text = new StringBuilder();
+
+			int totalHits = root.GetProperty("totalHits").GetInt32();
+			text.AppendLine($"{totalHits} packages tagged {tag}:");
+
+			JsonElement data = root.GetProperty("data");
+			int count = data.GetArrayLength();
+
+			for (int i = 0; i < count; i++)
+			{
+				JsonElement package = data[i];
+				string id = package.GetProperty("id").GetString();
+				string version = package.GetProperty("version").GetString();
+				string authors = String.Join(" & ", package.GetProperty("authors").EnumerateArray());
+				text.AppendLine($"* {id} (v{version}) - by {authors}");
+			}
+
+			text.AppendLine($"skip {skip} + take {take} = {count} packages");
+
+			return text.ToString();
+		}
+
 		void IDisposable.Dispose()
 		{
 			client.Dispose();
+		}
+
+		private static string BuildSearchQuery(string q, int skip, int take)
+		{
+			var query = new StringBuilder($"query?q={q}");
+
+			if (skip > 0)
+			{
+				query.Append($"&skip={skip}");
+			}
+
+			if (take > 0)
+			{
+				query.Append($"&take={take}");
+			}
+
+			return query.ToString();
 		}
 	}
 }

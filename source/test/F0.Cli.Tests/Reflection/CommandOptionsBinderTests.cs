@@ -7,7 +7,7 @@ using Xunit;
 
 namespace F0.Tests.Reflection
 {
-	public class CommandOptionsBinderTests
+	public partial class CommandOptionsBinderTests
 	{
 		[Fact]
 		public void NullCheck()

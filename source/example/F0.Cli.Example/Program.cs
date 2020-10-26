@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using F0.Cli.Example.Http;
 using F0.Hosting;
@@ -16,7 +17,7 @@ namespace F0.Cli.Example
 
 			if (args.Length == 0)
 			{
-				args = new string[] { "package", "F0.Cli", "--owner", "Flash0ver" };
+				args = new string[] { "package", "F0.Cli", "--owner", "Flash0ver", "--tag", "hosting", "--skip", "3", "--take", "3" };
 			}
 
 			Console.WriteLine($"command-line arguments {args.Length}: {String.Join(' ', args)}");
@@ -25,7 +26,7 @@ namespace F0.Cli.Example
 
 			Console.WriteLine();
 			string consoleAppName = AppDomain.CurrentDomain.FriendlyName;
-			string result = $"{exitCode} (0x{exitCode.ToString("x")})";
+			string result = $"{exitCode} (0x{exitCode.ToString("x", NumberFormatInfo.InvariantInfo)})";
 			Console.WriteLine($"The process '{consoleAppName}' has exited with code {result}.");
 
 			return exitCode;

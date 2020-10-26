@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace F0.Cli
 {
@@ -38,8 +39,9 @@ namespace F0.Cli
 					previous = GetShortSwitch(current);
 					AddOption(previous);
 				}
-				else if (command is null)
+				else if (i is 0)
 				{
+					Debug.Assert(command is null);
 					command = current;
 				}
 				else if (previous is null)
@@ -75,7 +77,16 @@ namespace F0.Cli
 
 		private static bool IsShortSwitch(string arg)
 		{
-			return arg.StartsWith("-", StringComparison.OrdinalIgnoreCase);
+			return arg.StartsWith("-", StringComparison.OrdinalIgnoreCase)
+				&& !IsNegativeNumber(arg);
+
+			static bool IsNegativeNumber(string arg)
+			{
+				const char decimalPoint = '.';
+
+				return (arg.Length > 2 && arg[1] is decimalPoint && Char.IsDigit(arg[2]))
+					|| (arg.Length > 1 && Char.IsDigit(arg[1]));
+			}
 		}
 
 		private static bool IsLongSwitch(string arg)

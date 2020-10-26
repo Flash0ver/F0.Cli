@@ -27,6 +27,9 @@ namespace F0.Cli.Example.Commands
 		public IEnumerable<string> Arguments { get; set; }
 
 		public string Owner { get; set; }
+		public string Tag { get; set; }
+		public int Skip { get; set; }
+		public int Take { get; set; }
 
 		public override async Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{
@@ -35,6 +38,9 @@ namespace F0.Cli.Example.Commands
 			reporter.WriteInfo($"Executing {nameof(PackageCommand)}");
 			reporter.WriteInfo($"Arguments: {String.Join(", ", Arguments)}");
 			reporter.WriteInfo($"Option {nameof(Owner)}: {Owner ?? "<null>"}");
+			reporter.WriteInfo($"Option {nameof(Tag)}: {Tag ?? "<null>"}");
+			reporter.WriteInfo($"Option {nameof(Skip)}: {Skip}");
+			reporter.WriteInfo($"Option {nameof(Take)}: {Take}");
 			reporter.WriteLine();
 
 			reporter.WriteInfo($"Hosting environment: {environment.EnvironmentName}");
@@ -57,6 +63,13 @@ namespace F0.Cli.Example.Commands
 			}
 
 			reporter.WriteLine();
+
+			if (Tag is { })
+			{
+				string data = await nuGetService.GetByTagAsync(Tag, Skip, Take, cancellationToken);
+				reporter.WriteInfo(data);
+			}
+
 			reporter.WriteInfo($"Executed {nameof(PackageCommand)}");
 			return Success();
 		}

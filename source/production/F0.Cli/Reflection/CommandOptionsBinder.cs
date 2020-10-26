@@ -6,7 +6,7 @@ using F0.Cli;
 
 namespace F0.Reflection
 {
-	internal static class CommandOptionsBinder
+	internal static partial class CommandOptionsBinder
 	{
 		internal static void BindOptions(CommandBase command, CommandLineArguments args)
 		{
@@ -67,16 +67,29 @@ namespace F0.Reflection
 					throw new InvalidCommandSwitchException(property);
 				}
 			}
+			else if (typeof(string).IsAssignableFrom(property.PropertyType))
+			{
+				property.SetValue(command, value);
+			}
+			else if (converters.TryGetValue(property.PropertyType, out Converter<string, object> converter))
+			{
+				try
+				{
+					object converted = converter.Invoke(value);
+					property.SetValue(command, converted);
+				}
+				catch (FormatException ex)
+				{
+					throw new CommandOptionBindingException(property, value, ex);
+				}
+				catch (OverflowException ex)
+				{
+					throw new CommandOptionBindingException(property, value, ex);
+				}
+			}
 			else
 			{
-				if (typeof(string).IsAssignableFrom(property.PropertyType))
-				{
-					property.SetValue(command, value);
-				}
-				else
-				{
-					throw new UnsupportedCommandOptionTypeException(property);
-				}
+				throw new UnsupportedCommandOptionTypeException(property);
 			}
 		}
 	}
