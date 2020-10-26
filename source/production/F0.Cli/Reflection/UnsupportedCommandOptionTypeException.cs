@@ -12,7 +12,7 @@ namespace F0.Reflection
 
 		private static string CreateMessage(PropertyInfo property)
 		{
-			string message = $"'{property.Name}' of '{property.ReflectedType}' is not a valid option of type {nameof(String)}.";
+			string message = $"'{property.Name}' of '{property.ReflectedType}' is not a valid option of type '{property.PropertyType}'.";
 			return message;
 		}
 	}

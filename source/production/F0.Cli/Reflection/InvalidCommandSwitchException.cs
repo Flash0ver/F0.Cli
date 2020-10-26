@@ -12,7 +12,7 @@ namespace F0.Reflection
 
 		private static string CreateMessage(PropertyInfo property)
 		{
-			string message = $"'{property.Name}' of '{property.ReflectedType}' is not a valid switch of type {nameof(Boolean)}.";
+			string message = $"'{property.Name}' of '{property.ReflectedType}' is not a valid switch of type '{nameof(Boolean)}'.";
 			return message;
 		}
 	}
