@@ -2,6 +2,8 @@
 CHANGELOG
 
 ## vNext
+
+## v0.5.0 (2020-10-27)
 - Added option binding of _built-in numeric types (C#)_ and `System.Numerics.BigInteger`.
 - Updated dependency on Generic Host from `Microsoft.Extensions.Hosting 3.1.0` to `Microsoft.Extensions.Hosting 3.1.9`.
 
