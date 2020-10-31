@@ -23,7 +23,7 @@ namespace F0.Cli.Example.Http
 		async Task<string> INuGetClient.GetByOwnerAsync(string owner, CancellationToken cancellationToken)
 		{
 			using HttpResponseMessage response = await client.GetAsync($"query?q=owner:{owner}", cancellationToken);
-			using Stream json = await response.Content.ReadAsStreamAsync();
+			await using Stream json = await response.Content.ReadAsStreamAsync();
 			using JsonDocument document = await JsonDocument.ParseAsync(json, default, cancellationToken);
 			JsonElement root = document.RootElement;
 
@@ -51,7 +51,7 @@ namespace F0.Cli.Example.Http
 		async Task<string> INuGetClient.GetByIdAsync(string id, CancellationToken cancellationToken)
 		{
 			using HttpResponseMessage response = await client.GetAsync($"query?q=PackageId:{id}", cancellationToken);
-			using Stream json = await response.Content.ReadAsStreamAsync();
+			await using Stream json = await response.Content.ReadAsStreamAsync();
 			using JsonDocument document = await JsonDocument.ParseAsync(json, default, cancellationToken);
 			JsonElement root = document.RootElement;
 
@@ -89,7 +89,7 @@ namespace F0.Cli.Example.Http
 		async Task<string> INuGetClient.GetByTagAsync(string tag, int skip, int take, CancellationToken cancellationToken)
 		{
 			using HttpResponseMessage response = await client.GetAsync(BuildSearchQuery($"tag:{tag}", skip, take), cancellationToken);
-			using Stream json = await response.Content.ReadAsStreamAsync();
+			await using Stream json = await response.Content.ReadAsStreamAsync();
 			using JsonDocument document = await JsonDocument.ParseAsync(json, default, cancellationToken);
 			JsonElement root = document.RootElement;
 
