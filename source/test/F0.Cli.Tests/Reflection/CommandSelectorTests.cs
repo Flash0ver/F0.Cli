@@ -14,7 +14,7 @@ namespace F0.Tests.Reflection
 		public void NullCheck()
 		{
 			Assert.Throws<ArgumentNullException>("assembly", () => CommandSelector.SelectCommand(null, CreateArgs("")));
-			Assert.Throws<ArgumentNullException>("args", () => CommandSelector.SelectCommand(Assembly.GetEntryAssembly(), null));
+			Assert.Throws<ArgumentNullException>("args", () => CommandSelector.SelectCommand(GetType().Assembly, null));
 		}
 
 		[Fact]

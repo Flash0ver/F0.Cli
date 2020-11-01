@@ -14,7 +14,7 @@ namespace F0.Tests.Commands
 		{
 			var tcs = new TaskCompletionSource<object>();
 
-#if !NETCOREAPP2_1
+#if HAS_ASYNCHRONOUS_DISPOSABLE
 			await
 #endif
 			using CancellationTokenRegistration ctr = cancellationToken.Register(state =>
