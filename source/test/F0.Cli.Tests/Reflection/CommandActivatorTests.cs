@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using F0.Cli;
 using F0.Reflection;
 using F0.Tests.Commands;

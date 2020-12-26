@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using F0.Cli;
 
 namespace F0.Reflection

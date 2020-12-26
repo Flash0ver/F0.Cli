@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using F0.Cli;
 using F0.Hosting;
 using F0.IO;

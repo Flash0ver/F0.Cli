@@ -1,4 +1,4 @@
-﻿using F0.Cli;
+using F0.Cli;
 using Xunit;
 
 namespace F0.Tests.Cli

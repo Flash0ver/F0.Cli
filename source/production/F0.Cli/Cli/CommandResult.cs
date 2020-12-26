@@ -1,4 +1,4 @@
-﻿namespace F0.Cli
+namespace F0.Cli
 {
 	public sealed class CommandResult
 	{

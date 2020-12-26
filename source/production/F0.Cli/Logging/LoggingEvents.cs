@@ -1,4 +1,4 @@
-﻿namespace F0.Logging
+namespace F0.Logging
 {
 	internal static class LoggingEvents
 	{

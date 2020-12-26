@@ -1,4 +1,4 @@
-﻿namespace F0.IO
+namespace F0.IO
 {
 	public interface IReporter
 	{

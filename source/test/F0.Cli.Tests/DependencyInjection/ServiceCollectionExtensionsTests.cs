@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using F0.Cli;
 using F0.DependencyInjection;
