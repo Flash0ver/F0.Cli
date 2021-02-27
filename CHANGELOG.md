@@ -2,6 +2,7 @@
 CHANGELOG
 
 ## vNext
+- Package: Embed icon (fixed _NuGet Warning NU5048_), keep fallback icon URL.
 
 ## v0.5.0 (2020-10-27)
 - Added option binding of _built-in numeric types (C#)_ and `System.Numerics.BigInteger`.
@@ -15,6 +16,7 @@ CHANGELOG
 
 ## v0.2.0 (2019-05-31)
 - Added cancellation of commands through the host's lifetime.
+- Package: Use license expression instead of deprecated license URL (fixed _NuGet Warning NU5125_).
 
 ## v0.1.0 (2019-04-21)
 - Added command-based programming model with support for dependency injection, arguments binding, options binding, exit code communication.
