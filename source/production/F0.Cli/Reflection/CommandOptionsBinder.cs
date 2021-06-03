@@ -10,14 +10,8 @@ namespace F0.Reflection
 	{
 		internal static void BindOptions(CommandBase command, CommandLineArguments args)
 		{
-			if (command is null)
-			{
-				throw new ArgumentNullException(nameof(command));
-			}
-			if (args is null)
-			{
-				throw new ArgumentNullException(nameof(args));
-			}
+			_ = command ?? throw new ArgumentNullException(nameof(command));
+			_ = args ?? throw new ArgumentNullException(nameof(args));
 
 			IReadOnlyDictionary<string, PropertyInfo> candidates = GetOptions(command);
 			SetOptions(candidates, command, args);
@@ -26,7 +20,7 @@ namespace F0.Reflection
 		private static IReadOnlyDictionary<string, PropertyInfo> GetOptions(CommandBase command)
 		{
 			Type type = command.GetType();
-			Dictionary<string, PropertyInfo> candidates = type.GetProperties().ToDictionary(property => property.Name.ToLowerInvariant());
+			Dictionary<string, PropertyInfo> candidates = type.GetProperties().ToDictionary(static property => property.Name.ToLowerInvariant());
 			return candidates;
 		}
 
@@ -46,12 +40,7 @@ namespace F0.Reflection
 				return prop.Key.Equals(option, StringComparison.Ordinal);
 			}).Value;
 
-			if (property is null)
-			{
-				throw new CommandOptionNotFoundException(command, option);
-			}
-
-			return property;
+			return property ?? throw new CommandOptionNotFoundException(command, option);
 		}
 
 		private static void SetOption(PropertyInfo property, CommandBase command, string value)

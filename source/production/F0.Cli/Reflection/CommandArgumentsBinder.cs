@@ -10,14 +10,8 @@ namespace F0.Reflection
 	{
 		internal static void BindArguments(CommandBase command, CommandLineArguments args)
 		{
-			if (command is null)
-			{
-				throw new ArgumentNullException(nameof(command));
-			}
-			if (args is null)
-			{
-				throw new ArgumentNullException(nameof(args));
-			}
+			_ = command ?? throw new ArgumentNullException(nameof(command));
+			_ = args ?? throw new ArgumentNullException(nameof(args));
 
 			if (args.HasArguments)
 			{
@@ -30,11 +24,13 @@ namespace F0.Reflection
 
 		private static PropertyInfo[] GetArguments(Type type)
 		{
-			PropertyInfo[] properties = type.GetProperties().Where(property =>
-			{
-				return property.Name.Equals("Args", StringComparison.Ordinal)
-					|| property.Name.Equals("Arguments", StringComparison.Ordinal);
-			}).ToArray();
+			PropertyInfo[] properties = type.GetProperties()
+				.Where(static property =>
+				{
+					return property.Name.Equals("Args", StringComparison.Ordinal)
+						|| property.Name.Equals("Arguments", StringComparison.Ordinal);
+				})
+				.ToArray();
 
 			return properties;
 		}

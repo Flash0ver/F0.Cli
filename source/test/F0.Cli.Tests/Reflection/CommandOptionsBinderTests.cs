@@ -12,7 +12,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void NullCheck()
 		{
-			var command = new NullCommand();
+			NullCommand command = new();
 			CommandLineArguments args = CreateArgs();
 
 			Assert.Throws<ArgumentNullException>("command", () => CommandOptionsBinder.BindOptions(null, args));
@@ -22,7 +22,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void OptionsWithoutValuesAreBoundToBooleanPropertiesWherePropertyNameMatchesOptionKey()
 		{
-			var command = new LogicalCommand();
+			LogicalCommand command = new();
 			CommandLineArguments args = CreateArgs("switch", null);
 
 			Assert.False(command.Switch);
@@ -33,7 +33,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void OptionsWithValuesMayBeBoundToStringPropertiesWherePropertyNameMatchesOptionKey()
 		{
-			var command = new TextCommand();
+			TextCommand command = new();
 			CommandLineArguments args = CreateArgs("text", "string");
 
 			Assert.Null(command.Text);
@@ -44,7 +44,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void BooleanPropertiesAreBoundAgainstOptionsWithoutValues()
 		{
-			var command = new LogicalCommand();
+			LogicalCommand command = new();
 			CommandLineArguments args = CreateArgs("switch", "bool");
 
 			Assert.Throws<UnsupportedCommandOptionTypeException>(() => CommandOptionsBinder.BindOptions(command, args));
@@ -53,7 +53,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void StringPropertiesAreBoundAgainstOptionsWithValues()
 		{
-			var command = new TextCommand();
+			TextCommand command = new();
 			CommandLineArguments args = CreateArgs("text", null);
 
 			Assert.Throws<InvalidCommandSwitchException>(() => CommandOptionsBinder.BindOptions(command, args));
@@ -62,7 +62,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void OptionKeysMustMatchExactly()
 		{
-			var command = new Command();
+			Command command = new();
 			CommandLineArguments args = CreateArgs("option0", "F0");
 
 			Assert.Throws<CommandOptionNotFoundException>(() => CommandOptionsBinder.BindOptions(command, args));
@@ -71,7 +71,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void OptionKeysMustBeLowercase()
 		{
-			var command = new Command();
+			Command command = new();
 			CommandLineArguments args = CreateArgs("Option", "240");
 
 			Assert.Throws<CommandOptionNotFoundException>(() => CommandOptionsBinder.BindOptions(command, args));
@@ -80,7 +80,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void OptionsAreOptional()
 		{
-			var command = new TestCommand();
+			TestCommand command = new();
 			CommandLineArguments args = CreateArgs();
 
 			bool option1 = command.Option1;
@@ -92,7 +92,7 @@ namespace F0.Tests.Reflection
 
 		private static CommandLineArguments CreateArgs(params string[] options)
 		{
-			var switches = new Dictionary<string, string>();
+			Dictionary<string, string> switches = new();
 
 			for (int i = 0; i < options.Length; i += 2)
 			{

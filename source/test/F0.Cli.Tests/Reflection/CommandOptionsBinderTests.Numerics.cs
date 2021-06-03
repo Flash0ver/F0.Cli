@@ -14,7 +14,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void OptionsWithValuesMayBeBoundToNumericPropertiesWherePropertyNameMatchesOptionKey_Positive()
 		{
-			var command = new NumericCommand();
+			NumericCommand command = new();
 			CommandLineArguments args = CreateArgs("sbyte", "111", "byte", "222", "int16", "333", "uint16", "444", "int32", "555", "uint32", "666", "int64", "777", "uint64", "888", "single", "1.1", "double", "2.2", "decimal", "3.3", "bigint", "999");
 
 			Assert.Equal(default, command.SByte);
@@ -49,7 +49,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void OptionsWithValuesMayBeBoundToNumericPropertiesWherePropertyNameMatchesOptionKey_Negative()
 		{
-			var command = new NumericCommand();
+			NumericCommand command = new();
 			CommandLineArguments args = CreateArgs("sbyte", "-111", "int16", "-333", "int32", "-555", "int64", "-777", "single", "-1.1", "double", "-2.2", "decimal", "-3.3", "bigint", "-999");
 
 			Assert.Equal(default, command.SByte);
@@ -77,7 +77,7 @@ namespace F0.Tests.Reflection
 		[MemberData(nameof(GetNegativeUnsignedIntegerTestData))]
 		public void CannotBindNegativeIntegerValueToUnsignedPropertyType(string option, string value)
 		{
-			var command = new NumericCommand();
+			NumericCommand command = new();
 			CommandLineArguments args = CreateArgs(option, value);
 
 			Exception exception = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, args));
@@ -88,7 +88,7 @@ namespace F0.Tests.Reflection
 		[MemberData(nameof(GetOverflowMaximumTestData))]
 		public void Overflow_Maximum(string option, string value)
 		{
-			var command = new NumericCommand();
+			NumericCommand command = new();
 			CommandLineArguments args = CreateArgs(option, value);
 
 			Exception exception = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, args));
@@ -99,7 +99,7 @@ namespace F0.Tests.Reflection
 		[MemberData(nameof(GetOverflowMinimumTestData))]
 		public void Overflow_Minimum(string option, string value)
 		{
-			var command = new NumericCommand();
+			NumericCommand command = new();
 			CommandLineArguments args = CreateArgs(option, value);
 
 			Exception exception = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, args));
@@ -112,7 +112,7 @@ namespace F0.Tests.Reflection
 			string maxSingle = Single.MaxValue.ToString("F", NumberFormatInfo.InvariantInfo);
 			string maxDouble = Double.MaxValue.ToString("F", NumberFormatInfo.InvariantInfo);
 
-			var command = new NumericCommand();
+			NumericCommand command = new();
 
 #if IS_IEEE_754_2008_COMPLIANT
 			CommandLineArguments args = CreateArgs("single", $"1{maxSingle}", "double", $"1{maxDouble}");
@@ -134,7 +134,7 @@ namespace F0.Tests.Reflection
 			string minSingle = Single.MinValue.ToString("F", NumberFormatInfo.InvariantInfo);
 			string minDouble = Double.MinValue.ToString("F", NumberFormatInfo.InvariantInfo);
 
-			var command = new NumericCommand();
+			NumericCommand command = new();
 
 #if IS_IEEE_754_2008_COMPLIANT
 			CommandLineArguments args = CreateArgs("single", minSingle.Insert(1, "1"), "double", minDouble.Insert(1, "1"));
@@ -154,7 +154,7 @@ namespace F0.Tests.Reflection
 		[MemberData(nameof(GetThousandsSeparatorTestData))]
 		public void Disallow_ThousandsSeparators(string option, string value)
 		{
-			var command = new NumericCommand();
+			NumericCommand command = new();
 			CommandLineArguments args = CreateArgs(option, value);
 
 			Exception exception = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, args));

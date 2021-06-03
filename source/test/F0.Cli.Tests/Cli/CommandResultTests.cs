@@ -8,14 +8,14 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void HasExitCode()
 		{
-			var result = new CommandResult(0xF0);
+			CommandResult result = new(0xF0);
 			Assert.Equal(240, result.ExitCode);
 		}
 
 		[Fact]
 		public void ZeroIndicatesThatTheProcessCompletedSuccessfully()
 		{
-			var result = new CommandResult(0);
+			CommandResult result = new(0);
 			Assert.True(result.IsSuccess);
 			Assert.False(result.IsFailure);
 		}
@@ -23,7 +23,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void NonZeroNumberIndicatesAnError()
 		{
-			var result = new CommandResult(0xF0);
+			CommandResult result = new(0xF0);
 			Assert.False(result.IsSuccess);
 			Assert.True(result.IsFailure);
 		}
@@ -31,7 +31,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void DefaultResultHasExitCodeValueOfZero()
 		{
-			var defaultResult = new CommandResult();
+			CommandResult defaultResult = new();
 			Assert.Equal(0, defaultResult.ExitCode);
 		}
 	}

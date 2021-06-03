@@ -12,7 +12,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void NullCheck()
 		{
-			var command = new NullCommand();
+			NullCommand command = new();
 			CommandLineArguments args = CreateArgs();
 
 			Assert.Throws<ArgumentNullException>("command", () => CommandArgumentsBinder.BindArguments(null, args));
@@ -22,7 +22,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void ArgumentsAreBoundToConventionallyNamedPropertyOfTypeStringArray()
 		{
-			var command = new TestCommand();
+			TestCommand command = new();
 			CommandLineArguments args = CreateArgs("2", "4", "0");
 
 			Assert.Null(command.Args);
@@ -33,7 +33,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void ArgumentsAreBoundToConventionallyNamedPropertyOfTypeCollectionOfStrings()
 		{
-			var command = new Command();
+			Command command = new();
 			CommandLineArguments args = CreateArgs("2", "4", "0");
 
 			Assert.Null(command.Arguments);
@@ -44,7 +44,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void CommandRequiresMatchIfArgumentsAreProvided()
 		{
-			var command = new NullCommand();
+			NullCommand command = new();
 			CommandLineArguments args = CreateArgs("F0");
 
 			Assert.Throws<CommandArgumentsNotFoundException>(() => CommandArgumentsBinder.BindArguments(command, args));
@@ -53,7 +53,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void CommandCannotHaveMultipleConventionalMatchesForArguments()
 		{
-			var command = new AmbiguousCommand();
+			AmbiguousCommand command = new();
 			CommandLineArguments args = CreateArgs("F0");
 
 			Assert.Throws<AmbiguousCommandArgumentsException>(() => CommandArgumentsBinder.BindArguments(command, args));
@@ -62,7 +62,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void PropertyMustHaveCompatibleTypeToBeBoundAgainst()
 		{
-			var command = new InvalidCommand();
+			InvalidCommand command = new();
 			CommandLineArguments args = CreateArgs("F0");
 
 			Assert.Throws<UnsupportedCommandArgumentsTypeException>(() => CommandArgumentsBinder.BindArguments(command, args));
@@ -71,7 +71,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void CommandDoesNotRequireMatchIfNoArgumentsAreProvided()
 		{
-			var command = new NullCommand();
+			NullCommand command = new();
 			CommandLineArguments args = CreateArgs();
 
 			CommandArgumentsBinder.BindArguments(command, args);

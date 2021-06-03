@@ -9,10 +9,7 @@ namespace F0.Cli
 	{
 		internal static CommandLineArguments Parse(ReadOnlyCollection<string> args)
 		{
-			if (args is null)
-			{
-				throw new ArgumentNullException(nameof(args));
-			}
+			_ = args ?? throw new ArgumentNullException(nameof(args));
 
 			return ParseCommandLineArguments(args);
 		}
@@ -20,8 +17,8 @@ namespace F0.Cli
 		private static CommandLineArguments ParseCommandLineArguments(ReadOnlyCollection<string> args)
 		{
 			string command = null;
-			var arguments = new List<string>();
-			var options = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+			List<string> arguments = new();
+			Dictionary<string, string> options = new(StringComparer.OrdinalIgnoreCase);
 
 			string previous = null;
 

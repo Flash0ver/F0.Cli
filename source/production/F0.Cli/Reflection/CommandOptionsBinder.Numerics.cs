@@ -91,7 +91,7 @@ namespace F0.Reflection
 
 		private static object ConvertBigInteger(string value)
 		{
-			var integral = BigInteger.Parse(value, NumberStyles.AllowLeadingSign, NumberFormatInfo.InvariantInfo);
+			BigInteger integral = BigInteger.Parse(value, NumberStyles.AllowLeadingSign, NumberFormatInfo.InvariantInfo);
 			return integral;
 		}
 	}

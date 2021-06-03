@@ -49,14 +49,8 @@ namespace F0.Hosting
 
 		internal static IHostBuilder UseSetting(this IHostBuilder hostBuilder, string key, string value)
 		{
-			if (key is null)
-			{
-				throw new ArgumentNullException(nameof(key));
-			}
-			if (value is null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+			_ = key ?? throw new ArgumentNullException(nameof(key));
+			_ = value ?? throw new ArgumentNullException(nameof(value));
 
 			return hostBuilder.ConfigureHostConfiguration(configBuilder =>
 			{

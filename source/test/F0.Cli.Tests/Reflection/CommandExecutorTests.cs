@@ -20,7 +20,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public async Task ExecuteCommandSuccessfully()
 		{
-			var command = new DelegateCommand(() => 0x_F0);
+			DelegateCommand command = new(() => 0x_F0);
 
 			CommandResult result = await CommandExecutor.InvokeAsync(command, CancellationToken.None);
 			Assert.Equal(0x_F0, result.ExitCode);
@@ -29,9 +29,9 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public async Task ExecuteCancelableCommand_ThrowsWrappedException()
 		{
-			using (var cts = new CancellationTokenSource())
+			using (CancellationTokenSource cts = new())
 			{
-				var command = new CancellationCommand();
+				CancellationCommand command = new();
 				cts.Cancel();
 
 				CommandCanceledException exception = await Assert.ThrowsAsync<CommandCanceledException>(() => CommandExecutor.InvokeAsync(command, cts.Token));
@@ -40,9 +40,9 @@ namespace F0.Tests.Reflection
 				Assert.Equal(cts.Token, inner.CancellationToken);
 			}
 
-			using (var cts = new CancellationTokenSource())
+			using (CancellationTokenSource cts = new())
 			{
-				var command = new CancelCommand();
+				CancelCommand command = new();
 				cts.Cancel();
 
 				Task<CommandResult> task = CommandExecutor.InvokeAsync(command, cts.Token);
@@ -60,7 +60,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public async Task ExecuteCommandWithAnUnhandledException_ThrowsWrappedException()
 		{
-			var command = new ExceptionCommand();
+			ExceptionCommand command = new();
 
 			CommandExecutionException exception = await Assert.ThrowsAsync<CommandExecutionException>(() => CommandExecutor.InvokeAsync(command, CancellationToken.None));
 			Assert.IsType<CommandException>(exception.InnerException);

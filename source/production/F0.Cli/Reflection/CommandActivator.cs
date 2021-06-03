@@ -8,23 +8,12 @@ namespace F0.Reflection
 	{
 		internal static CommandBase ConstructCommand(IServiceProvider provider, Type type)
 		{
-			if (provider is null)
-			{
-				throw new ArgumentNullException(nameof(provider));
-			}
-			if (type is null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
+			_ = provider ?? throw new ArgumentNullException(nameof(provider));
+			_ = type ?? throw new ArgumentNullException(nameof(type));
 
 			CommandBase command = ActivateCommand(provider, type);
 
-			if (command is null)
-			{
-				throw new ArgumentException($"{nameof(Type)} must be of type {typeof(CommandBase)}.", nameof(type));
-			}
-
-			return command;
+			return command ?? throw new ArgumentException($"{nameof(Type)} must be of type {typeof(CommandBase)}.", nameof(type));
 		}
 
 		private static CommandBase ActivateCommand(IServiceProvider provider, Type type)

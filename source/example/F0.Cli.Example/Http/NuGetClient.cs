@@ -27,7 +27,7 @@ namespace F0.Cli.Example.Http
 			using JsonDocument document = await JsonDocument.ParseAsync(json, default, cancellationToken);
 			JsonElement root = document.RootElement;
 
-			var text = new StringBuilder();
+			StringBuilder text = new();
 
 			int totalHits = root.GetProperty("totalHits").GetInt32();
 			text.AppendLine($"{totalHits} packages by {owner}:");
@@ -55,7 +55,7 @@ namespace F0.Cli.Example.Http
 			using JsonDocument document = await JsonDocument.ParseAsync(json, default, cancellationToken);
 			JsonElement root = document.RootElement;
 
-			var text = new StringBuilder();
+			StringBuilder text = new();
 
 			int totalHits = root.GetProperty("totalHits").GetInt32();
 			if (totalHits != 1)
@@ -93,7 +93,7 @@ namespace F0.Cli.Example.Http
 			using JsonDocument document = await JsonDocument.ParseAsync(json, default, cancellationToken);
 			JsonElement root = document.RootElement;
 
-			var text = new StringBuilder();
+			StringBuilder text = new();
 
 			int totalHits = root.GetProperty("totalHits").GetInt32();
 			text.AppendLine($"{totalHits} packages tagged {tag}:");
@@ -122,7 +122,7 @@ namespace F0.Cli.Example.Http
 
 		private static string BuildSearchQuery(string q, int skip, int take)
 		{
-			var query = new StringBuilder($"query?q={q}");
+			StringBuilder query = new($"query?q={q}");
 
 			if (skip > 0)
 			{

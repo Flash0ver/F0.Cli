@@ -12,12 +12,12 @@ namespace F0.Tests.Commands
 
 		public override async Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{
-			var tcs = new TaskCompletionSource<object>();
+			TaskCompletionSource<object> tcs = new();
 
 #if HAS_ASYNCHRONOUS_DISPOSABLE
 			await
 #endif
-			using CancellationTokenRegistration ctr = cancellationToken.Register(state =>
+			using CancellationTokenRegistration ctr = cancellationToken.Register(static state =>
 			{
 				_ = ((TaskCompletionSource<object>)state).TrySetResult(null);
 			}, tcs);

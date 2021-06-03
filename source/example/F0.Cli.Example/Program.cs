@@ -34,9 +34,9 @@ namespace F0.Cli.Example
 
 		public static IHostBuilder CreateHostBuilder(string[] args)
 		{
-			var builder = new HostBuilder();
+			HostBuilder builder = new();
 			builder.UseAssemblyAttributes();
-			builder.ConfigureServices((hostContext, services) =>
+			builder.ConfigureServices(static (hostContext, services) =>
 			{
 				services.AddHttpClient<INuGetClient, NuGetClient>();
 			});

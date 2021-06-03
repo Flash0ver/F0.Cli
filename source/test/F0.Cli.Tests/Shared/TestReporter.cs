@@ -63,7 +63,7 @@ namespace F0.Tests.Shared
 
 		private void Write(LogSeverity severity, string message)
 		{
-			var log = new LogMessage(severity, message);
+			LogMessage log = new(severity, message);
 			messages.Enqueue(log);
 		}
 

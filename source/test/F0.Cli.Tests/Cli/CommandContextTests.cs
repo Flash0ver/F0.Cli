@@ -13,7 +13,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void HasReadonlyArgs()
 		{
-			var context = new CommandContext(new string[] { "F0.Cli" }, assembly);
+			CommandContext context = new(new string[] { "F0.Cli" }, assembly);
 			Assert.Equal(new[] { "F0.Cli" }, context.CommandLineArgs);
 			Assert.IsType<ReadOnlyCollection<string>>(context.CommandLineArgs);
 		}
@@ -27,7 +27,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void HasApplicationPartsAsAssembly()
 		{
-			var context = new CommandContext(Array.Empty<string>(), assembly);
+			CommandContext context = new(Array.Empty<string>(), assembly);
 			Assert.Same(assembly, context.CommandAssembly);
 		}
 
@@ -40,9 +40,9 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void ContextStoresResult()
 		{
-			var context = new CommandContext(Array.Empty<string>(), assembly);
+			CommandContext context = new(Array.Empty<string>(), assembly);
 
-			var result = new CommandResult(0);
+			CommandResult result = new(0);
 			context.SetResult(result);
 			Assert.Same(result, context.GetResult());
 		}
@@ -50,7 +50,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void ResultMustNotBeNull()
 		{
-			var context = new CommandContext(Array.Empty<string>(), assembly);
+			CommandContext context = new(Array.Empty<string>(), assembly);
 
 			Assert.Throws<InvalidOperationException>(() => context.GetResult());
 			Assert.Throws<ArgumentNullException>("result", () => context.SetResult(null));
@@ -59,7 +59,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void ResultCanBeSetOnlyOnce()
 		{
-			var context = new CommandContext(Array.Empty<string>(), assembly);
+			CommandContext context = new(Array.Empty<string>(), assembly);
 
 			context.SetResult(new CommandResult(0));
 			Assert.Throws<InvalidOperationException>(() => context.SetResult(new CommandResult(0)));

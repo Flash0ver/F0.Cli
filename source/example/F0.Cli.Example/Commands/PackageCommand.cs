@@ -48,7 +48,7 @@ namespace F0.Cli.Example.Commands
 			reporter.WriteInfo($"Content root path: {environment.ContentRootPath}");
 			reporter.WriteLine();
 
-			if (Owner is { })
+			if (Owner is not null)
 			{
 				string info = await nuGetService.GetByOwnerAsync(Owner, cancellationToken);
 				reporter.WriteInfo(info);
@@ -64,7 +64,7 @@ namespace F0.Cli.Example.Commands
 
 			reporter.WriteLine();
 
-			if (Tag is { })
+			if (Tag is not null)
 			{
 				string data = await nuGetService.GetByTagAsync(Tag, Skip, Take, cancellationToken);
 				reporter.WriteInfo(data);

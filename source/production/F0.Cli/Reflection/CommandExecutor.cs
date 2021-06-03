@@ -9,10 +9,7 @@ namespace F0.Reflection
 	{
 		internal static async Task<CommandResult> InvokeAsync(CommandBase command, CancellationToken cancellationToken)
 		{
-			if (command is null)
-			{
-				throw new ArgumentNullException(nameof(command));
-			}
+			_ = command ?? throw new ArgumentNullException(nameof(command));
 
 			CommandResult result;
 

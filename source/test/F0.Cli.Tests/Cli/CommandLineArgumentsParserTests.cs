@@ -245,7 +245,7 @@ namespace F0.Tests.Cli
 
 		private static void CheckOptions(CommandLineArguments args, params string[] options)
 		{
-			var expected = new Dictionary<string, string>();
+			Dictionary<string, string> expected = new();
 
 			for (int i = 0; i < options.Length; i += 2)
 			{

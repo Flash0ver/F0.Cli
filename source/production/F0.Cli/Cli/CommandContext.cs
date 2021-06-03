@@ -26,7 +26,7 @@ namespace F0.Cli
 
 		internal void SetResult(CommandResult result)
 		{
-			if (this.result is { })
+			if (this.result is not null)
 			{
 				throw new InvalidOperationException("Result already set.");
 			}

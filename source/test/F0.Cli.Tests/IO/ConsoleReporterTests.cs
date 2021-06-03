@@ -89,7 +89,7 @@ namespace F0.Tests.IO
 
 		private static ConsoleReporter CreateReporter(TextWriter standardOutput)
 		{
-			var reporter = new ConsoleReporter();
+			ConsoleReporter reporter = new();
 			Console.SetOut(standardOutput);
 			return reporter;
 		}

@@ -9,14 +9,8 @@ namespace F0.Reflection
 	{
 		internal static Type SelectCommand(Assembly assembly, CommandLineArguments args)
 		{
-			if (assembly is null)
-			{
-				throw new ArgumentNullException(nameof(assembly));
-			}
-			if (args is null)
-			{
-				throw new ArgumentNullException(nameof(args));
-			}
+			_ = assembly ?? throw new ArgumentNullException(nameof(assembly));
+			_ = args ?? throw new ArgumentNullException(nameof(args));
 
 			ILookup<string, Type> commands = GetCommands(assembly);
 			Type command = MatchCommand(commands, args);
@@ -25,11 +19,11 @@ namespace F0.Reflection
 
 		private static ILookup<string, Type> GetCommands(Assembly assembly)
 		{
-			string convention = "Command";
+			const string convention = "Command";
 
 			ILookup<string, Type> commands = assembly.GetTypes()
-				.Where(type => type.IsPublic && !type.IsAbstract && typeof(CommandBase).IsAssignableFrom(type))
-				.ToLookup(type =>
+				.Where(static type => type.IsPublic && !type.IsAbstract && typeof(CommandBase).IsAssignableFrom(type))
+				.ToLookup(static type =>
 				{
 					string name = type.Name;
 

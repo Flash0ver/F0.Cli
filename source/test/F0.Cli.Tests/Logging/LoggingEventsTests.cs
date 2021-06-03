@@ -13,7 +13,7 @@ namespace F0.Tests.Logging
 		[Fact]
 		public void EventId_IsUniqueErrorLevel()
 		{
-			var set = new HashSet<int>();
+			HashSet<int> set = new();
 			foreach (LoggingEventsData data in LoggingEventsData.Data)
 			{
 				Assert.True(set.Add(data.Id), $"Duplicate: {data.Id:X}");
@@ -69,21 +69,15 @@ namespace F0.Tests.Logging
 		{
 			foreach (LoggingEventsData data in Data.Where(d => d.Id != 0))
 			{
-				if (includeLogLevel)
-				{
-					yield return new object[] { data.Id, data.LogLevel };
-				}
-				else
-				{
-					yield return new object[] { data.Id };
-				}
+				yield return includeLogLevel
+					? new object[] { data.Id, data.LogLevel }
+					: new object[] { data.Id };
 			}
 		}
 
 		public LoggingEventsData(int id, LogLevel logLevel)
 		{
-			Id = id;
-			LogLevel = logLevel;
+			(Id, LogLevel) = (id, logLevel);
 		}
 
 		public int Id { get; }

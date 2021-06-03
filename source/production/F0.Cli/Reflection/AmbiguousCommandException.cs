@@ -12,7 +12,7 @@ namespace F0.Reflection
 
 		private static string CreateMessage(Type[] candidates, string verb)
 		{
-			string ambiguities = String.Join(Environment.NewLine, candidates.Select(candidate => candidate.FullName));
+			string ambiguities = String.Join(Environment.NewLine, candidates.Select(static candidate => candidate.FullName));
 
 			string message = $"Ambiguous command '{verb}'. Multiple commands matched:";
 			message += $"{Environment.NewLine}{ambiguities}";

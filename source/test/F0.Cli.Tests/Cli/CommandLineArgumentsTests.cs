@@ -22,7 +22,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void WhenInputHasVerb_ThenInputIsCommand()
 		{
-			var args = new CommandLineArguments("verb", CreateArguments(), CreateOptions());
+			CommandLineArguments args = new("verb", CreateArguments(), CreateOptions());
 
 			Assert.Equal("verb", args.Verb);
 
@@ -33,7 +33,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void WhenInputHasNoVerb_ThenInputIsNoCommand()
 		{
-			var args = new CommandLineArguments("", CreateArguments(), CreateOptions());
+			CommandLineArguments args = new("", CreateArguments(), CreateOptions());
 
 			Assert.Empty(args.Verb);
 
@@ -44,7 +44,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void OptionalArgumentsAreCollectionOfStrings()
 		{
-			var args = new CommandLineArguments("", CreateArguments("a", "b", "c"), CreateOptions());
+			CommandLineArguments args = new("", CreateArguments("a", "b", "c"), CreateOptions());
 
 			Assert.Equal(new List<string> { "a", "b", "c" }, args.Arguments);
 			Assert.True(args.HasArguments);
@@ -56,7 +56,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void OptionalOptionsAreKeyValuePairsOfStrings()
 		{
-			var args = new CommandLineArguments("", CreateArguments(), CreateOptions("a", "1", "b", "2", "c", "3"));
+			CommandLineArguments args = new("", CreateArguments(), CreateOptions("a", "1", "b", "2", "c", "3"));
 
 			Assert.Empty(args.Arguments);
 			Assert.False(args.HasArguments);
@@ -72,7 +72,7 @@ namespace F0.Tests.Cli
 
 		private static IReadOnlyDictionary<string, string> CreateOptions(params string[] options)
 		{
-			var switches = new Dictionary<string, string>();
+			Dictionary<string, string> switches = new();
 
 			for (int i = 0; i < options.Length; i += 2)
 			{

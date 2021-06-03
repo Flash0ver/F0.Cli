@@ -11,7 +11,7 @@ namespace F0.DependencyInjection
 	{
 		public static IServiceCollection AddCli(this IServiceCollection services, string[] args)
 		{
-			services.Configure<ConsoleLifetimeOptions>(options =>
+			services.Configure<ConsoleLifetimeOptions>(static options =>
 			{
 				options.SuppressStatusMessages = true;
 			});

@@ -38,7 +38,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public async Task SupportsCooperativeCancellation()
 		{
-			using (var cts = new CancellationTokenSource())
+			using (CancellationTokenSource cts = new())
 			{
 				CommandBase command = new CancellationCommand();
 				cts.Cancel();
@@ -47,7 +47,7 @@ namespace F0.Tests.Cli
 				Assert.Equal(cts.Token, exception.CancellationToken);
 			}
 
-			using (var cts = new CancellationTokenSource())
+			using (CancellationTokenSource cts = new())
 			{
 				CommandBase command = new CancelCommand();
 				cts.Cancel();
