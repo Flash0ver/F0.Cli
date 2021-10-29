@@ -14,7 +14,7 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public async Task NullCheck()
 		{
-			await Assert.ThrowsAsync<ArgumentNullException>("command", () => CommandExecutor.InvokeAsync(null, CancellationToken.None));
+			await Assert.ThrowsAsync<ArgumentNullException>("command", () => CommandExecutor.InvokeAsync(null!, CancellationToken.None));
 		}
 
 		[Fact]
@@ -53,6 +53,7 @@ namespace F0.Tests.Reflection
 				Assert.Equal(cts.Token, inner.CancellationToken);
 				Assert.NotSame(task, inner.Task);
 				Assert.Equal(TaskStatus.Faulted, task.Status);
+				Assert.NotNull(task.Exception);
 				Assert.Same(exception, task.Exception.InnerExceptions.Single());
 			}
 		}

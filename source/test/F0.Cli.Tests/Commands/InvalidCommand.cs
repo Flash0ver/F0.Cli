@@ -7,6 +7,8 @@ namespace F0.Tests.Commands
 {
 	public sealed class InvalidCommand : CommandBase
 	{
+		internal const string Name = "invalid";
+
 		internal InvalidCommand()
 		{
 		}

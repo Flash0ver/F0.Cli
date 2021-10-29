@@ -12,11 +12,11 @@ namespace F0.Tests.Cli
 		{
 			string verb = String.Empty;
 			IReadOnlyList<string> arguments = CreateArguments();
-			IReadOnlyDictionary<string, string> options = CreateOptions();
+			IReadOnlyDictionary<string, string?> options = CreateOptions();
 
-			Assert.Throws<ArgumentNullException>(nameof(verb), () => new CommandLineArguments(null, arguments, options));
-			Assert.Throws<ArgumentNullException>(nameof(arguments), () => new CommandLineArguments(verb, null, options));
-			Assert.Throws<ArgumentNullException>(nameof(options), () => new CommandLineArguments(verb, arguments, null));
+			Assert.Throws<ArgumentNullException>(nameof(verb), () => new CommandLineArguments(null!, arguments, options));
+			Assert.Throws<ArgumentNullException>(nameof(arguments), () => new CommandLineArguments(verb, null!, options));
+			Assert.Throws<ArgumentNullException>(nameof(options), () => new CommandLineArguments(verb, arguments, null!));
 		}
 
 		[Fact]
@@ -56,12 +56,12 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void OptionalOptionsAreKeyValuePairsOfStrings()
 		{
-			CommandLineArguments args = new("", CreateArguments(), CreateOptions("a", "1", "b", "2", "c", "3"));
+			CommandLineArguments args = new("", CreateArguments(), CreateOptions(("a", "1"), ("b", "2"), ("c", "3")));
 
 			Assert.Empty(args.Arguments);
 			Assert.False(args.HasArguments);
 
-			Assert.Equal(new Dictionary<string, string> { { "a", "1" }, { "b", "2" }, { "c", "3" } }, args.Options);
+			Assert.Equal(new Dictionary<string, string?> { { "a", "1" }, { "b", "2" }, { "c", "3" } }, args.Options);
 			Assert.True(args.HasOptions);
 		}
 
@@ -70,15 +70,13 @@ namespace F0.Tests.Cli
 			return new List<string>(arguments);
 		}
 
-		private static IReadOnlyDictionary<string, string> CreateOptions(params string[] options)
+		private static IReadOnlyDictionary<string, string?> CreateOptions(params (string Key, string? Value)[] options)
 		{
-			Dictionary<string, string> switches = new();
+			Dictionary<string, string?> switches = new();
 
-			for (int i = 0; i < options.Length; i += 2)
+			foreach ((string Key, string? Value) option in options)
 			{
-				string key = options[i];
-				string value = options[i + 1];
-				switches.Add(key, value);
+				switches.Add(option.Key, option.Value);
 			}
 
 			return switches;

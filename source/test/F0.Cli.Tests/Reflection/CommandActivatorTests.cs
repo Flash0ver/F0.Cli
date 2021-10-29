@@ -14,8 +14,8 @@ namespace F0.Tests.Reflection
 		{
 			IServiceProvider provider = CreateDependencyInjection();
 
-			Assert.Throws<ArgumentNullException>("provider", () => CommandActivator.ConstructCommand(null, typeof(NullCommand)));
-			Assert.Throws<ArgumentNullException>("type", () => CommandActivator.ConstructCommand(provider, null));
+			Assert.Throws<ArgumentNullException>("provider", () => CommandActivator.ConstructCommand(null!, typeof(NullCommand)));
+			Assert.Throws<ArgumentNullException>("type", () => CommandActivator.ConstructCommand(provider, null!));
 		}
 
 		[Fact]

@@ -24,10 +24,10 @@ namespace F0.Cli.Example.Commands
 			this.nuGetService = nuGetService;
 		}
 
-		public IEnumerable<string> Arguments { get; set; }
+		public IEnumerable<string>? Arguments { get; set; }
 
-		public string Owner { get; set; }
-		public string Tag { get; set; }
+		public string? Owner { get; set; }
+		public string? Tag { get; set; }
 		public int Skip { get; set; }
 		public int Take { get; set; }
 

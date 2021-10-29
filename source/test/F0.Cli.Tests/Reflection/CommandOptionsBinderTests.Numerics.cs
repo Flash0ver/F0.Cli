@@ -15,7 +15,7 @@ namespace F0.Tests.Reflection
 		public void OptionsWithValuesMayBeBoundToNumericPropertiesWherePropertyNameMatchesOptionKey_Positive()
 		{
 			NumericCommand command = new();
-			CommandLineArguments args = CreateArgs("sbyte", "111", "byte", "222", "int16", "333", "uint16", "444", "int32", "555", "uint32", "666", "int64", "777", "uint64", "888", "single", "1.1", "double", "2.2", "decimal", "3.3", "bigint", "999");
+			CommandLineArguments args = CreateArgs(("sbyte", "111"), ("byte", "222"), ("int16", "333"), ("uint16", "444"), ("int32", "555"), ("uint32", "666"), ("int64", "777"), ("uint64", "888"), ("single", "1.1"), ("double", "2.2"), ("decimal", "3.3"), ("bigint", "999"));
 
 			Assert.Equal(default, command.SByte);
 			Assert.Equal(default, command.Byte);
@@ -50,7 +50,7 @@ namespace F0.Tests.Reflection
 		public void OptionsWithValuesMayBeBoundToNumericPropertiesWherePropertyNameMatchesOptionKey_Negative()
 		{
 			NumericCommand command = new();
-			CommandLineArguments args = CreateArgs("sbyte", "-111", "int16", "-333", "int32", "-555", "int64", "-777", "single", "-1.1", "double", "-2.2", "decimal", "-3.3", "bigint", "-999");
+			CommandLineArguments args = CreateArgs(("sbyte", "-111"), ("int16", "-333"), ("int32", "-555"), ("int64", "-777"), ("single", "-1.1"), ("double", "-2.2"), ("decimal", "-3.3"), ("bigint", "-999"));
 
 			Assert.Equal(default, command.SByte);
 			Assert.Equal(default, command.Int16);
@@ -78,7 +78,7 @@ namespace F0.Tests.Reflection
 		public void CannotBindNegativeIntegerValueToUnsignedPropertyType(string option, string value)
 		{
 			NumericCommand command = new();
-			CommandLineArguments args = CreateArgs(option, value);
+			CommandLineArguments args = CreateArgs((option, value));
 
 			Exception exception = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, args));
 			Assert.IsType<FormatException>(exception.InnerException);
@@ -89,7 +89,7 @@ namespace F0.Tests.Reflection
 		public void Overflow_Maximum(string option, string value)
 		{
 			NumericCommand command = new();
-			CommandLineArguments args = CreateArgs(option, value);
+			CommandLineArguments args = CreateArgs((option, value));
 
 			Exception exception = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, args));
 			Assert.IsType<OverflowException>(exception.InnerException);
@@ -100,7 +100,7 @@ namespace F0.Tests.Reflection
 		public void Overflow_Minimum(string option, string value)
 		{
 			NumericCommand command = new();
-			CommandLineArguments args = CreateArgs(option, value);
+			CommandLineArguments args = CreateArgs((option, value));
 
 			Exception exception = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, args));
 			Assert.IsType<OverflowException>(exception.InnerException);
@@ -115,14 +115,14 @@ namespace F0.Tests.Reflection
 			NumericCommand command = new();
 
 #if IS_IEEE_754_2008_COMPLIANT
-			CommandLineArguments args = CreateArgs("single", $"1{maxSingle}", "double", $"1{maxDouble}");
+			CommandLineArguments args = CreateArgs(("single", $"1{maxSingle}"), ("double", $"1{maxDouble}"));
 
 			CommandOptionsBinder.BindOptions(command, args);
 			Assert.Equal(Single.PositiveInfinity, command.Single);
 			Assert.Equal(Double.PositiveInfinity, command.Double);
 #else
-			Exception binary32 = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, CreateArgs("single", $"1{maxSingle}")));
-			Exception binary64 = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, CreateArgs("double", $"1{maxDouble}")));
+			Exception binary32 = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, CreateArgs(("single", $"1{maxSingle}"))));
+			Exception binary64 = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, CreateArgs(("double", $"1{maxDouble}"))));
 			Assert.IsType<OverflowException>(binary32.InnerException);
 			Assert.IsType<OverflowException>(binary64.InnerException);
 #endif
@@ -137,14 +137,14 @@ namespace F0.Tests.Reflection
 			NumericCommand command = new();
 
 #if IS_IEEE_754_2008_COMPLIANT
-			CommandLineArguments args = CreateArgs("single", minSingle.Insert(1, "1"), "double", minDouble.Insert(1, "1"));
+			CommandLineArguments args = CreateArgs(("single", minSingle.Insert(1, "1")), ("double", minDouble.Insert(1, "1")));
 
 			CommandOptionsBinder.BindOptions(command, args);
 			Assert.Equal(Single.NegativeInfinity, command.Single);
 			Assert.Equal(Double.NegativeInfinity, command.Double);
 #else
-			Exception binary32 = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, CreateArgs("single", minSingle.Insert(1, "1"))));
-			Exception binary64 = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, CreateArgs("double", minDouble.Insert(1, "1"))));
+			Exception binary32 = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, CreateArgs(("single", minSingle.Insert(1, "1")))));
+			Exception binary64 = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, CreateArgs(("double", minDouble.Insert(1, "1")))));
 			Assert.IsType<OverflowException>(binary32.InnerException);
 			Assert.IsType<OverflowException>(binary64.InnerException);
 #endif
@@ -155,7 +155,7 @@ namespace F0.Tests.Reflection
 		public void Disallow_ThousandsSeparators(string option, string value)
 		{
 			NumericCommand command = new();
-			CommandLineArguments args = CreateArgs(option, value);
+			CommandLineArguments args = CreateArgs((option, value));
 
 			Exception exception = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, args));
 			Assert.IsType<FormatException>(exception.InnerException);

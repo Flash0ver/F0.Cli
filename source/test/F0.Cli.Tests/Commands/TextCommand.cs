@@ -11,7 +11,7 @@ namespace F0.Tests.Commands
 		{
 		}
 
-		public string Text { get; set; }
+		public string? Text { get; set; }
 
 		public override Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{

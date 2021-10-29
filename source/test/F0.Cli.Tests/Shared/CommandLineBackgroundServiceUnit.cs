@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace F0.Tests.Shared
 	{
 		private readonly CommandContext context;
 		private readonly IHostedService hostedService;
-		private readonly TaskCompletionSource<bool> commandPipelineOperation;
+		private readonly TaskCompletionSource commandPipelineOperation;
 
 		public CommandLineBackgroundServiceUnit(params string[] args)
 			: this(null, args)
@@ -25,7 +26,7 @@ namespace F0.Tests.Shared
 		{
 		}
 
-		private CommandLineBackgroundServiceUnit(Action<IServiceCollection> configureDelegate, string[] args)
+		private CommandLineBackgroundServiceUnit(Action<IServiceCollection>? configureDelegate, string[] args)
 		{
 			Reporter = new TestReporter();
 
@@ -37,15 +38,17 @@ namespace F0.Tests.Shared
 
 			IHostApplicationLifetime appLifetime = new TestApplicationLifetime(() =>
 			{
+				Debug.Assert(commandPipelineOperation is not null);
+
 				StopCount++;
-				commandPipelineOperation.SetResult(true);
+				commandPipelineOperation.SetResult();
 			});
 
 			Assembly assembly = typeof(CommandLineBackgroundServiceUnit).Assembly;
 
 			context = new CommandContext(args, assembly);
 			hostedService = new CommandLineBackgroundService(provider, appLifetime, context, Reporter);
-			commandPipelineOperation = new TaskCompletionSource<bool>();
+			commandPipelineOperation = new TaskCompletionSource();
 		}
 
 		internal TestReporter Reporter { get; }
@@ -55,7 +58,7 @@ namespace F0.Tests.Shared
 		{
 			await ExecuteAsync(hostedService, cancellationToken);
 
-			Task<bool> task = commandPipelineOperation.Task;
+			Task task = commandPipelineOperation.Task;
 			TimeSpan timeout = TimeSpan.FromMilliseconds(100);
 			if (await Task.WhenAny(task, Task.Delay(timeout, cancellationToken)) != task)
 			{
@@ -78,10 +81,15 @@ namespace F0.Tests.Shared
 			//Microsoft.Extensions.Hosting.BackgroundService.ExecuteAsync
 
 			Type type = hostedService.GetType();
-			MethodInfo mi = type.GetMethod("ExecuteAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+			MethodInfo? mi = type.GetMethod("ExecuteAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+			Debug.Assert(mi is not null);
 
-			object value = mi.Invoke(hostedService, new object[] { cancellationToken });
+			object? value = mi.Invoke(hostedService, new object[] { cancellationToken });
+			Debug.Assert(value is Task);
+
 			var task = value as Task;
+			Debug.Assert(task is not null);
+
 			return task;
 		}
 	}

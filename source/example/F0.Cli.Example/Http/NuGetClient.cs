@@ -36,8 +36,8 @@ namespace F0.Cli.Example.Http
 			JsonElement.ArrayEnumerator data = root.GetProperty("data").EnumerateArray();
 			foreach (JsonElement package in data)
 			{
-				string id = package.GetProperty("id").GetString();
-				string type = package.GetProperty("@type").GetString();
+				string id = package.GetProperty("id").GetString() ?? "<id>";
+				string type = package.GetProperty("@type").GetString() ?? "<@type>";
 				int totalDownloads = package.GetProperty("totalDownloads").GetInt32();
 
 				text.AppendLine($"* {id} ({type}) - {totalDownloads} downloads");
@@ -67,16 +67,16 @@ namespace F0.Cli.Example.Http
 			JsonElement.ArrayEnumerator data = root.GetProperty("data").EnumerateArray();
 			JsonElement package = data.Single();
 
-			string title = package.GetProperty("title").GetString();
-			string type = package.GetProperty("@type").GetString();
+			string title = package.GetProperty("title").GetString() ?? "<title>";
+			string type = package.GetProperty("@type").GetString() ?? "<@type>";
 			JsonElement.ArrayEnumerator tags = package.GetProperty("tags").EnumerateArray();
-			string description = package.GetProperty("description").GetString();
+			string description = package.GetProperty("description").GetString() ?? "<description>";
 			text.Append($"{title} ({type}) [{String.Join(", ", tags)}] | {description}");
 
 			JsonElement.ArrayEnumerator versions = package.GetProperty("versions").EnumerateArray();
 			foreach (JsonElement version in versions)
 			{
-				string v = version.GetProperty("version").GetString();
+				string v = version.GetProperty("version").GetString() ?? "<version>";
 				int downloads = version.GetProperty("downloads").GetInt32();
 
 				text.AppendLine();
@@ -104,8 +104,8 @@ namespace F0.Cli.Example.Http
 			for (int i = 0; i < count; i++)
 			{
 				JsonElement package = data[i];
-				string id = package.GetProperty("id").GetString();
-				string version = package.GetProperty("version").GetString();
+				string id = package.GetProperty("id").GetString() ?? "<id>";
+				string version = package.GetProperty("version").GetString() ?? "<version>";
 				string authors = String.Join(" & ", package.GetProperty("authors").EnumerateArray());
 				text.AppendLine($"* {id} (v{version}) - by {authors}");
 			}

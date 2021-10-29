@@ -26,7 +26,7 @@ namespace F0.Reflection
 
 		private static void SetOptions(IReadOnlyDictionary<string, PropertyInfo> candidates, CommandBase command, CommandLineArguments args)
 		{
-			foreach (KeyValuePair<string, string> option in args.Options)
+			foreach (KeyValuePair<string, string?> option in args.Options)
 			{
 				PropertyInfo property = MatchOptions(candidates, command, option.Key);
 				SetOption(property, command, option.Value);
@@ -35,7 +35,7 @@ namespace F0.Reflection
 
 		private static PropertyInfo MatchOptions(IReadOnlyDictionary<string, PropertyInfo> candidates, CommandBase command, string option)
 		{
-			PropertyInfo property = candidates.SingleOrDefault(prop =>
+			PropertyInfo? property = candidates.SingleOrDefault(prop =>
 			{
 				return prop.Key.Equals(option, StringComparison.Ordinal);
 			}).Value;
@@ -43,7 +43,7 @@ namespace F0.Reflection
 			return property ?? throw new CommandOptionNotFoundException(command, option);
 		}
 
-		private static void SetOption(PropertyInfo property, CommandBase command, string value)
+		private static void SetOption(PropertyInfo property, CommandBase command, string? value)
 		{
 			if (value is null)
 			{
@@ -60,7 +60,7 @@ namespace F0.Reflection
 			{
 				property.SetValue(command, value);
 			}
-			else if (converters.TryGetValue(property.PropertyType, out Converter<string, object> converter))
+			else if (converters.TryGetValue(property.PropertyType, out Converter<string, object>? converter))
 			{
 				try
 				{

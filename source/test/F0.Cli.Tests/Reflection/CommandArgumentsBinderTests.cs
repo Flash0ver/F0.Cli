@@ -15,8 +15,8 @@ namespace F0.Tests.Reflection
 			NullCommand command = new();
 			CommandLineArguments args = CreateArgs();
 
-			Assert.Throws<ArgumentNullException>("command", () => CommandArgumentsBinder.BindArguments(null, args));
-			Assert.Throws<ArgumentNullException>("args", () => CommandArgumentsBinder.BindArguments(command, null));
+			Assert.Throws<ArgumentNullException>("command", () => CommandArgumentsBinder.BindArguments(null!, args));
+			Assert.Throws<ArgumentNullException>("args", () => CommandArgumentsBinder.BindArguments(command, null!));
 		}
 
 		[Fact]
@@ -38,6 +38,7 @@ namespace F0.Tests.Reflection
 
 			Assert.Null(command.Arguments);
 			CommandArgumentsBinder.BindArguments(command, args);
+			Assert.NotNull(command.Arguments);
 			Assert.Equal(new string[] { "2", "4", "0" }, command.Arguments);
 		}
 
@@ -79,7 +80,7 @@ namespace F0.Tests.Reflection
 
 		private static CommandLineArguments CreateArgs(params string[] arguments)
 		{
-			return new CommandLineArguments(String.Empty, new List<string>(arguments), new Dictionary<string, string>());
+			return new CommandLineArguments(String.Empty, new List<string>(arguments), new Dictionary<string, string?>());
 		}
 	}
 }

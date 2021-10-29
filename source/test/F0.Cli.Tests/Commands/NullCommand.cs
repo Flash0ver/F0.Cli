@@ -6,6 +6,8 @@ namespace F0.Tests.Commands
 {
 	public sealed class NullCommand : CommandBase
 	{
+		internal const string Name = "null";
+
 		public NullCommand()
 		{
 		}

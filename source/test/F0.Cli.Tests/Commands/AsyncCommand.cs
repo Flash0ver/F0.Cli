@@ -6,6 +6,8 @@ namespace F0.Tests.Commands
 {
 	public sealed class AsyncCommand : CommandBase
 	{
+		internal const string Name = "async";
+
 		public AsyncCommand()
 		{
 		}

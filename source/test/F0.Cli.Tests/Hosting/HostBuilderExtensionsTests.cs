@@ -106,8 +106,8 @@ namespace F0.Tests.Hosting
 		{
 			IHostBuilder hostBuilder = new HostBuilder();
 
-			Assert.Throws<ArgumentNullException>("key", () => hostBuilder.UseSetting(null, ""));
-			Assert.Throws<ArgumentNullException>("value", () => hostBuilder.UseSetting("", null));
+			Assert.Throws<ArgumentNullException>("key", () => hostBuilder.UseSetting(null!, ""));
+			Assert.Throws<ArgumentNullException>("value", () => hostBuilder.UseSetting("", null!));
 
 			Assert.Same(hostBuilder, hostBuilder.UseSetting("Key", "Value"));
 

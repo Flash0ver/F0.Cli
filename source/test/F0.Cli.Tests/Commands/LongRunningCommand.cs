@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using F0.Cli;
@@ -6,23 +7,26 @@ namespace F0.Tests.Commands
 {
 	public sealed class LongRunningCommand : CommandBase
 	{
+		internal const string Name = "longrunning";
+
 		public LongRunningCommand()
 		{
 		}
 
 		public override async Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{
-			TaskCompletionSource<object> tcs = new();
+			TaskCompletionSource tcs = new();
 
 #if HAS_ASYNCHRONOUS_DISPOSABLE
 			await
 #endif
 			using CancellationTokenRegistration ctr = cancellationToken.Register(static state =>
 			{
-				_ = ((TaskCompletionSource<object>)state).TrySetResult(null);
+				Debug.Assert(state is TaskCompletionSource);
+				_ = ((TaskCompletionSource)state).TrySetResult();
 			}, tcs);
 
-			_ = await tcs.Task;
+			await tcs.Task;
 
 			return Success();
 		}

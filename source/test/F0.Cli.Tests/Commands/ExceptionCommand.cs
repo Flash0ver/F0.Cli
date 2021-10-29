@@ -7,6 +7,8 @@ namespace F0.Tests.Commands
 {
 	public sealed class ExceptionCommand : CommandBase
 	{
+		internal const string Name = "exception";
+
 		public ExceptionCommand()
 		{
 		}

@@ -33,7 +33,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task ResultIsAvailableAfterCommandPipelineExecution()
 		{
-			CommandLineBackgroundServiceUnit unit = new("null");
+			CommandLineBackgroundServiceUnit unit = new(NullCommand.Name);
 
 			Assert.Throws<InvalidOperationException>(() => unit.GetResult());
 			await unit.RunAsync();
@@ -45,7 +45,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task ApplicationIsStoppedAfterCommandPipelineExecution()
 		{
-			CommandLineBackgroundServiceUnit unit = new("null");
+			CommandLineBackgroundServiceUnit unit = new(NullCommand.Name);
 
 			Assert.Equal(0, unit.StopCount);
 			await unit.RunAsync();
@@ -57,7 +57,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task CommandExecutionMayCompleteAsynchronously()
 		{
-			CommandLineBackgroundServiceUnit unit = new("async");
+			CommandLineBackgroundServiceUnit unit = new(AsyncCommand.Name);
 
 			Assert.Throws<InvalidOperationException>(() => unit.GetResult());
 			Assert.Equal(0, unit.StopCount);
@@ -74,7 +74,7 @@ namespace F0.Tests.Hosting
 		public async Task CommandIsDisposedAfterCommandPipelineExecution()
 		{
 			CommandDependency tracer = new();
-			CommandLineBackgroundServiceUnit unit = new("dependency", services => services.AddSingleton(_ => tracer));
+			CommandLineBackgroundServiceUnit unit = new(DependencyCommand.Name, services => services.AddSingleton(_ => tracer));
 
 			Assert.Empty(tracer.CallLog);
 			await unit.RunAsync();
@@ -86,7 +86,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task RunCommandPipeline_Successfully()
 		{
-			CommandLineBackgroundServiceUnit unit = new("exitcode");
+			CommandLineBackgroundServiceUnit unit = new(ExitCodeCommand.Name);
 
 			await unit.RunAsync();
 
@@ -99,7 +99,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task RunCommandPipeline_Successfully_CommandLineArguments()
 		{
-			CommandLineBackgroundServiceUnit unit = new("exitcode", "--exitcode", "240");
+			CommandLineBackgroundServiceUnit unit = new(ExitCodeCommand.Name, "--exitcode", "240");
 
 			await unit.RunAsync();
 
@@ -112,7 +112,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task RunCommandPipeline_InvalidCommandLineArguments()
 		{
-			CommandLineBackgroundServiceUnit unit = new(null, "");
+			CommandLineBackgroundServiceUnit unit = new(null!, "");
 
 			await unit.RunAsync();
 
@@ -140,7 +140,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task RunCommandPipeline_CommandCannotBeActivated()
 		{
-			CommandLineBackgroundServiceUnit unit = new("invalid");
+			CommandLineBackgroundServiceUnit unit = new(InvalidCommand.Name);
 
 			await unit.RunAsync();
 
@@ -154,7 +154,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task RunCommandPipeline_InvalidArguments()
 		{
-			CommandLineBackgroundServiceUnit unit = new("null", "args");
+			CommandLineBackgroundServiceUnit unit = new(NullCommand.Name, "args");
 
 			await unit.RunAsync();
 
@@ -168,7 +168,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task RunCommandPipeline_InvalidOptions()
 		{
-			CommandLineBackgroundServiceUnit unit = new("null", "--option", "value");
+			CommandLineBackgroundServiceUnit unit = new(NullCommand.Name, "--option", "value");
 
 			await unit.RunAsync();
 
@@ -182,7 +182,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task RunCommandPipeline_Cancellation_CanceledCommand_Synchronous()
 		{
-			CommandLineBackgroundServiceUnit unit = new("cancellation");
+			CommandLineBackgroundServiceUnit unit = new(CancellationCommand.Name);
 
 			await unit.RunAsync(new CancellationToken(true));
 
@@ -196,7 +196,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task RunCommandPipeline_Cancellation_CanceledCommand_Asynchronous()
 		{
-			CommandLineBackgroundServiceUnit unit = new("cancel");
+			CommandLineBackgroundServiceUnit unit = new(CancelCommand.Name);
 
 			await unit.RunAsync(new CancellationToken(true));
 
@@ -210,7 +210,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task RunCommandPipeline_Cancellation_GracefulTermination_InResponseToCancellationRequest()
 		{
-			CommandLineBackgroundServiceUnit unit = new("longrunning");
+			CommandLineBackgroundServiceUnit unit = new(LongRunningCommand.Name);
 
 			using CancellationTokenSource cts = new();
 			Task task = unit.RunAsync(cts.Token);
@@ -229,7 +229,7 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public async Task RunCommandPipeline_CommandThrowsException()
 		{
-			CommandLineBackgroundServiceUnit unit = new("exception");
+			CommandLineBackgroundServiceUnit unit = new(ExceptionCommand.Name);
 
 			await unit.RunAsync();
 

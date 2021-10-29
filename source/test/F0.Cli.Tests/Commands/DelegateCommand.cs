@@ -7,6 +7,8 @@ namespace F0.Tests.Commands
 {
 	public sealed class DelegateCommand : CommandBase
 	{
+		internal const string Name = "delegate";
+
 		private readonly Func<int> onExecute;
 
 		public DelegateCommand(Func<int> onExecute)

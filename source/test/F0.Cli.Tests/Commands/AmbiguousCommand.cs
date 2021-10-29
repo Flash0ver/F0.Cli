@@ -12,8 +12,8 @@ namespace F0.Tests.Commands
 		{
 		}
 
-		public string[] Args { get; set; }
-		public IEnumerable<string> Arguments { get; set; }
+		public string[]? Args { get; set; }
+		public IEnumerable<string>? Arguments { get; set; }
 
 		public override Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{

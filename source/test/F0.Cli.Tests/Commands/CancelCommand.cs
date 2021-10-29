@@ -7,6 +7,8 @@ namespace F0.Tests.Commands
 {
 	public sealed class CancelCommand : CommandBase
 	{
+		internal const string Name = "cancel";
+
 		public CancelCommand()
 		{
 		}

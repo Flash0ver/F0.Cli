@@ -12,9 +12,9 @@ namespace F0.Tests.Commands
 		{
 		}
 
-		public IEnumerable<string> Arguments { get; set; }
+		public IEnumerable<string>? Arguments { get; set; }
 
-		public string Option { get; set; }
+		public string? Option { get; set; }
 
 		public override Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{

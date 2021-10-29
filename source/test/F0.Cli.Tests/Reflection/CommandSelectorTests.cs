@@ -13,20 +13,20 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void NullCheck()
 		{
-			Assert.Throws<ArgumentNullException>("assembly", () => CommandSelector.SelectCommand(null, CreateArgs("")));
-			Assert.Throws<ArgumentNullException>("args", () => CommandSelector.SelectCommand(GetType().Assembly, null));
+			Assert.Throws<ArgumentNullException>("assembly", () => CommandSelector.SelectCommand(null!, CreateArgs("")));
+			Assert.Throws<ArgumentNullException>("args", () => CommandSelector.SelectCommand(GetType().Assembly, null!));
 		}
 
 		[Fact]
 		public void AssemblyWithoutAnyCommand()
 		{
-			Assert.Throws<CommandNotFoundException>(() => CommandSelector.SelectCommand(Assembly.GetCallingAssembly(), CreateArgs("null")));
+			Assert.Throws<CommandNotFoundException>(() => CommandSelector.SelectCommand(Assembly.GetCallingAssembly(), CreateArgs(NullCommand.Name)));
 		}
 
 		[Fact]
 		public void AssemblyWithCommands()
 		{
-			Type command = CommandSelector.SelectCommand(Assembly.GetExecutingAssembly(), CreateArgs("null"));
+			Type command = CommandSelector.SelectCommand(Assembly.GetExecutingAssembly(), CreateArgs(NullCommand.Name));
 			Assert.Equal(typeof(NullCommand), command);
 		}
 
@@ -52,19 +52,19 @@ namespace F0.Tests.Reflection
 		[Fact]
 		public void MatchesOnlyConcreteTypes()
 		{
-			Assert.Throws<CommandNotFoundException>(() => CommandSelector.SelectCommand(Assembly.GetExecutingAssembly(), CreateArgs("abstract")));
+			Assert.Throws<CommandNotFoundException>(() => CommandSelector.SelectCommand(Assembly.GetExecutingAssembly(), CreateArgs(AbstractCommand.Name)));
 		}
 
 		[Fact]
 		public void MatchesOnlyPublicTypes()
 		{
-			Assert.Throws<CommandNotFoundException>(() => CommandSelector.SelectCommand(Assembly.GetExecutingAssembly(), CreateArgs("internal")));
+			Assert.Throws<CommandNotFoundException>(() => CommandSelector.SelectCommand(Assembly.GetExecutingAssembly(), CreateArgs(InternalCommand.Name)));
 		}
 
 		[Fact]
 		public void MatcherRemovesConventionalSuffix()
 		{
-			Type command = CommandSelector.SelectCommand(Assembly.GetExecutingAssembly(), CreateArgs("delegate"));
+			Type command = CommandSelector.SelectCommand(Assembly.GetExecutingAssembly(), CreateArgs(DelegateCommand.Name));
 			Assert.Equal(typeof(DelegateCommand), command);
 		}
 
@@ -77,7 +77,7 @@ namespace F0.Tests.Reflection
 
 		private static CommandLineArguments CreateArgs(string verb)
 		{
-			return new CommandLineArguments(verb, new List<string>(), new Dictionary<string, string>());
+			return new CommandLineArguments(verb, new List<string>(), new Dictionary<string, string?>());
 		}
 	}
 }

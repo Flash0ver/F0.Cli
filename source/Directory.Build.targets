@@ -1,11 +1,19 @@
 <Project>
 
-  <PropertyGroup Condition="('$(TargetFrameworkIdentifier)' == '.NETStandard' And $([MSBuild]::VersionEquals($(TargetFrameworkVersion), 2.1))) Or ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), 3.0)))">
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework' Or ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And $([MSBuild]::VersionLessThan($(TargetFrameworkVersion), '3.0'))) Or ('$(TargetFrameworkIdentifier)' == '.NETStandard' And $([MSBuild]::VersionLessThan($(TargetFrameworkVersion), '2.1')))">
+    <NoWarn>$(NoWarn);nullable</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="('$(TargetFrameworkIdentifier)' == '.NETStandard' And $([MSBuild]::VersionEquals($(TargetFrameworkVersion), '2.1'))) Or ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '3.0')))">
     <DefineConstants>$(DefineConstants);HAS_ASYNCHRONOUS_DISPOSABLE</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), 3.0))">
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '3.0'))">
     <DefineConstants>$(DefineConstants);IS_IEEE_754_2008_COMPLIANT</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))">
+    <DefineConstants>$(DefineConstants);HAS_TASKCOMPLETIONSOURCE</DefineConstants>
   </PropertyGroup>
 
 </Project>

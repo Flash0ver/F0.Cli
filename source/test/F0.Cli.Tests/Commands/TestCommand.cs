@@ -11,10 +11,10 @@ namespace F0.Tests.Commands
 		{
 		}
 
-		public string[] Args { get; set; }
+		public string[]? Args { get; set; }
 
 		public bool Option1 { get; set; }
-		public string Option2 { get; set; }
+		public string? Option2 { get; set; }
 
 		public override Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{

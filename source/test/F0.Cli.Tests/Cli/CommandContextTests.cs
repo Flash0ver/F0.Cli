@@ -21,7 +21,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void ArgsMustNotBeNull()
 		{
-			Assert.Throws<ArgumentNullException>("args", () => new CommandContext(null, assembly));
+			Assert.Throws<ArgumentNullException>("args", () => new CommandContext(null!, assembly));
 		}
 
 		[Fact]
@@ -34,7 +34,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void AssemblyPartMustNotBeNull()
 		{
-			Assert.Throws<ArgumentNullException>("commandAssembly", () => new CommandContext(Array.Empty<string>(), null));
+			Assert.Throws<ArgumentNullException>("commandAssembly", () => new CommandContext(Array.Empty<string>(), null!));
 		}
 
 		[Fact]
@@ -53,7 +53,7 @@ namespace F0.Tests.Cli
 			CommandContext context = new(Array.Empty<string>(), assembly);
 
 			Assert.Throws<InvalidOperationException>(() => context.GetResult());
-			Assert.Throws<ArgumentNullException>("result", () => context.SetResult(null));
+			Assert.Throws<ArgumentNullException>("result", () => context.SetResult(null!));
 		}
 
 		[Fact]

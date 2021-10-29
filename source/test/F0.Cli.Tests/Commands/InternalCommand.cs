@@ -7,6 +7,8 @@ namespace F0.Tests.Commands
 {
 	internal sealed class InternalCommand : CommandBase
 	{
+		internal const string Name = "internal";
+
 		public InternalCommand()
 		{
 		}

@@ -7,11 +7,13 @@ namespace F0.Tests.Commands
 {
 	public sealed class ExitCodeCommand : CommandBase
 	{
+		internal const string Name = "exitcode";
+
 		public ExitCodeCommand()
 		{
 		}
 
-		public string ExitCode { get; set; }
+		public string? ExitCode { get; set; }
 
 		public override Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{

@@ -7,6 +7,8 @@ namespace F0.Tests.Commands
 {
 	public abstract class AbstractCommand : CommandBase
 	{
+		internal const string Name = "abstract";
+
 		protected AbstractCommand()
 		{
 		}

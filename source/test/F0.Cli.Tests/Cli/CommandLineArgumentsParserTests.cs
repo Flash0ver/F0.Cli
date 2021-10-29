@@ -10,7 +10,7 @@ namespace F0.Tests.Cli
 		[Fact]
 		public void CannotParseNull()
 		{
-			Assert.Throws<ArgumentNullException>("args", () => CommandLineArgumentsParser.Parse(null));
+			Assert.Throws<ArgumentNullException>("args", () => CommandLineArgumentsParser.Parse(null!));
 		}
 
 		[Fact]
@@ -69,7 +69,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("verb", "--switch");
 			CheckVerb(args, "verb");
 			CheckArguments(args);
-			CheckOptions(args, "switch", null);
+			CheckOptions(args, ("switch", null));
 		}
 
 		[Fact]
@@ -78,7 +78,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("verb", "-s");
 			CheckVerb(args, "verb");
 			CheckArguments(args);
-			CheckOptions(args, "s", null);
+			CheckOptions(args, ("s", null));
 		}
 
 		[Fact]
@@ -87,7 +87,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("verb", "--option", "value");
 			CheckVerb(args, "verb");
 			CheckArguments(args);
-			CheckOptions(args, "option", "value");
+			CheckOptions(args, ("option", "value"));
 		}
 
 		[Fact]
@@ -96,7 +96,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("verb", "-o", "value");
 			CheckVerb(args, "verb");
 			CheckArguments(args);
-			CheckOptions(args, "o", "value");
+			CheckOptions(args, ("o", "value"));
 		}
 
 		[Fact]
@@ -105,7 +105,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("verb", "-s", "-o", "v", "--switch", "--option", "value");
 			CheckVerb(args, "verb");
 			CheckArguments(args);
-			CheckOptions(args, "s", null, "o", "v", "switch", null, "option", "value");
+			CheckOptions(args, ("s", null), ("o", "v"), ("switch", null), ("option", "value"));
 		}
 
 		[Fact]
@@ -114,7 +114,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("verb", "arg", "-s", "-o", "v", "--switch", "--option", "value");
 			CheckVerb(args, "verb");
 			CheckArguments(args, "arg");
-			CheckOptions(args, "s", null, "o", "v", "switch", null, "option", "value");
+			CheckOptions(args, ("s", null), ("o", "v"), ("switch", null), ("option", "value"));
 		}
 
 		[Fact]
@@ -123,7 +123,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("--option", "value", "arg");
 			CheckVerb(args, "");
 			CheckArguments(args, "arg");
-			CheckOptions(args, "option", "value");
+			CheckOptions(args, ("option", "value"));
 		}
 
 		[Fact]
@@ -132,7 +132,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("verb", "arg1", "-o", "v", "arg2", "--option", "value", "arg3");
 			CheckVerb(args, "verb");
 			CheckArguments(args, "arg1", "arg2", "arg3");
-			CheckOptions(args, "o", "v", "option", "value");
+			CheckOptions(args, ("o", "v"), ("option", "value"));
 		}
 
 		[Fact]
@@ -141,7 +141,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("-o", "v", "arg1", "arg2", "--option", "value", "arg3");
 			CheckVerb(args, "");
 			CheckArguments(args, "arg1", "arg2", "arg3");
-			CheckOptions(args, "o", "v", "option", "value");
+			CheckOptions(args, ("o", "v"), ("option", "value"));
 		}
 
 		[Fact]
@@ -150,7 +150,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("verb", "--integral", "240", "--floating-point", "240.042");
 			CheckVerb(args, "verb");
 			CheckArguments(args);
-			CheckOptions(args, "integral", "240", "floating-point", "240.042");
+			CheckOptions(args, ("integral", "240"), ("floating-point", "240.042"));
 		}
 
 		[Fact]
@@ -159,7 +159,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("-o", "-240");
 			CheckVerb(args, "");
 			CheckArguments(args);
-			CheckOptions(args, "o", "-240");
+			CheckOptions(args, ("o", "-240"));
 		}
 
 		[Fact]
@@ -168,7 +168,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("--option", "--240");
 			CheckVerb(args, "");
 			CheckArguments(args);
-			CheckOptions(args, "option", null, "240", null);
+			CheckOptions(args, ("option", null), ("240", null));
 		}
 
 		[Theory]
@@ -179,7 +179,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("--number", value);
 			CheckVerb(args, "");
 			CheckArguments(args);
-			CheckOptions(args, "number", value);
+			CheckOptions(args, ("number", value));
 		}
 
 		[Theory]
@@ -191,7 +191,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("--runtime", value);
 			CheckVerb(args, "");
 			CheckArguments(args);
-			CheckOptions(args, "runtime", value);
+			CheckOptions(args, ("runtime", value));
 		}
 
 		[Theory]
@@ -204,7 +204,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("--semver", value);
 			CheckVerb(args, "");
 			CheckArguments(args);
-			CheckOptions(args, "semver", value);
+			CheckOptions(args, ("semver", value));
 		}
 
 		[Theory]
@@ -225,7 +225,7 @@ namespace F0.Tests.Cli
 			CommandLineArguments args = Parse("--option", value);
 			CheckVerb(args, "");
 			CheckArguments(args);
-			CheckOptions(args, "option", value);
+			CheckOptions(args, ("option", value));
 		}
 
 		private static CommandLineArguments Parse(params string[] args)
@@ -243,15 +243,13 @@ namespace F0.Tests.Cli
 			Assert.Equal(arguments, args.Arguments);
 		}
 
-		private static void CheckOptions(CommandLineArguments args, params string[] options)
+		private static void CheckOptions(CommandLineArguments args, params (string Key, string? Value)[] options)
 		{
-			Dictionary<string, string> expected = new();
+			Dictionary<string, string?> expected = new();
 
-			for (int i = 0; i < options.Length; i += 2)
+			foreach ((string Key, string? Value) option in options)
 			{
-				string key = options[i];
-				string value = options[i + 1];
-				expected.Add(key, value);
+				expected.Add(option.Key, option.Value);
 			}
 
 			Assert.Equal(expected, args.Options);

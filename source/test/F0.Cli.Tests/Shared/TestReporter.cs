@@ -61,13 +61,13 @@ namespace F0.Tests.Shared
 			}
 		}
 
-		private void Write(LogSeverity severity, string message)
+		private void Write(LogSeverity severity, string? message)
 		{
 			LogMessage log = new(severity, message);
 			messages.Enqueue(log);
 		}
 
-		private void CheckNext(LogSeverity severity, string message)
+		private void CheckNext(LogSeverity severity, string? message)
 		{
 			LogMessage log = messages.Dequeue();
 			if (log.Severity != severity)
@@ -76,21 +76,21 @@ namespace F0.Tests.Shared
 			}
 			if (log.Message != message)
 			{
-				throw new InvalidOperationException($"Expected message: {message}{Environment.NewLine}Actual message: {log.Message}");
+				throw new InvalidOperationException($"Expected message: {message ?? "<NULL>"}{Environment.NewLine}Actual message: {log.Message ?? "<NULL>"}");
 			}
 		}
 	}
 
 	internal sealed class LogMessage
 	{
-		public LogMessage(LogSeverity severity, string message)
+		public LogMessage(LogSeverity severity, string? message)
 		{
 			Severity = severity;
 			Message = message;
 		}
 
 		public LogSeverity Severity { get; }
-		public string Message { get; }
+		public string? Message { get; }
 	}
 
 	internal enum LogSeverity

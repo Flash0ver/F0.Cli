@@ -8,6 +8,8 @@ namespace F0.Tests.Commands
 {
 	public sealed class DependencyCommand : CommandBase
 	{
+		internal const string Name = "dependency";
+
 		private readonly CommandDependency dependency;
 
 		public DependencyCommand(CommandDependency dependency)

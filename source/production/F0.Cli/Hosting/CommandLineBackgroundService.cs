@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,6 +50,7 @@ namespace F0.Hosting
 			}
 			catch (CommandExecutionException exception)
 			{
+				Debug.Assert(exception.InnerException is not null, $"{typeof(CommandExecutionException)} should have an {nameof(Exception.InnerException)}.");
 				reporter.WriteError(exception.InnerException.Message);
 				result = new CommandResult(LoggingEvents.CommandExecutionFaulted);
 			}

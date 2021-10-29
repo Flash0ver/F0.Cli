@@ -6,7 +6,7 @@ namespace F0.Cli
 {
 	internal sealed class CommandContext
 	{
-		private CommandResult result;
+		private CommandResult? result;
 
 		internal CommandContext(string[] args, Assembly commandAssembly)
 		{

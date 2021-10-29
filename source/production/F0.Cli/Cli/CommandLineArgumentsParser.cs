@@ -16,11 +16,11 @@ namespace F0.Cli
 
 		private static CommandLineArguments ParseCommandLineArguments(ReadOnlyCollection<string> args)
 		{
-			string command = null;
+			string? command = null;
 			List<string> arguments = new();
-			Dictionary<string, string> options = new(StringComparer.OrdinalIgnoreCase);
+			Dictionary<string, string?> options = new(StringComparer.OrdinalIgnoreCase);
 
-			string previous = null;
+			string? previous = null;
 
 			for (int i = 0; i < args.Count; i++)
 			{

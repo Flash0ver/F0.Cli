@@ -11,12 +11,12 @@ namespace F0.Reflection
 			_ = provider ?? throw new ArgumentNullException(nameof(provider));
 			_ = type ?? throw new ArgumentNullException(nameof(type));
 
-			CommandBase command = ActivateCommand(provider, type);
+			CommandBase? command = ActivateCommand(provider, type);
 
 			return command ?? throw new ArgumentException($"{nameof(Type)} must be of type {typeof(CommandBase)}.", nameof(type));
 		}
 
-		private static CommandBase ActivateCommand(IServiceProvider provider, Type type)
+		private static CommandBase? ActivateCommand(IServiceProvider provider, Type type)
 		{
 			return ActivatorUtilities.CreateInstance(provider, type) as CommandBase;
 		}
