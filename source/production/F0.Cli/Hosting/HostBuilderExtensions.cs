@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace F0.Hosting
 {
-	public static class HostBuilderExtensions
+	public static partial class HostBuilderExtensions
 	{
 		public static IHostBuilder UseAssemblyAttributes(this IHostBuilder hostBuilder, Assembly assembly)
 		{
@@ -69,6 +69,37 @@ namespace F0.Hosting
 					new KeyValuePair<string, string>(key, value)
 				});
 			});
+		}
+	}
+
+	public static partial class HostBuilderExtensions
+	{
+		public static IHostBuilder UseAssemblyAttributes<TApplicationPart>(this IHostBuilder hostBuilder)
+		{
+			Assembly assembly = typeof(TApplicationPart).Assembly;
+
+			return hostBuilder.UseAssemblyAttributes(assembly);
+		}
+
+		public static IHostBuilder UseEnvironment<TApplicationPart>(this IHostBuilder hostBuilder)
+		{
+			Assembly assembly = typeof(TApplicationPart).Assembly;
+
+			return hostBuilder.UseEnvironment(assembly);
+		}
+
+		public static IHostBuilder UseApplicationName<TApplicationPart>(this IHostBuilder hostBuilder)
+		{
+			Assembly assembly = typeof(TApplicationPart).Assembly;
+
+			return hostBuilder.UseApplicationName(assembly);
+		}
+
+		public static IHostBuilder UseCli<TApplicationPart>(this IHostBuilder hostBuilder, string[] args)
+		{
+			Assembly commandAssembly = typeof(TApplicationPart).Assembly;
+
+			return hostBuilder.UseCli(commandAssembly, args);
 		}
 	}
 }

@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using F0.IO;
 using Xunit;
@@ -31,7 +30,8 @@ namespace F0.Tests.IO
 		[Fact]
 		public void DefaultConstructorIsPublic()
 		{
-			ConstructorInfo constructor = typeof(ConsoleReporter).GetConstructors().Single();
+			ConstructorInfo[] constructors = typeof(ConsoleReporter).GetConstructors();
+			ConstructorInfo constructor = Assert.Single(constructors);
 
 			Assert.True(constructor.IsPublic);
 			Assert.Empty(constructor.GetParameters());

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using F0.Cli;
 using F0.Hosting;
@@ -40,6 +39,20 @@ namespace F0.Tests.Hosting
 		}
 
 		[Fact]
+		public void ConfigureFromAssemblyInfo_Generic()
+		{
+			IHostBuilder hostBuilder = new HostBuilder();
+
+			Assert.Same(hostBuilder, hostBuilder.UseAssemblyAttributes<HostBuilderExtensionsTests>());
+
+			IHost host = hostBuilder.Build();
+			IHostEnvironment environment = host.Services.GetRequiredService<IHostEnvironment>();
+
+			Assert.True(environment.EnvironmentName == Environments.Development || environment.EnvironmentName == Environments.Production);
+			Assert.Equal("F0.Cli.Tests", environment.ApplicationName);
+		}
+
+		[Fact]
 		public void ConfigureEnvironmentFromAssemblyConfiguration()
 		{
 			IHostBuilder hostBuilder = new HostBuilder();
@@ -61,6 +74,20 @@ namespace F0.Tests.Hosting
 		}
 
 		[Fact]
+		public void ConfigureEnvironmentFromAssemblyConfiguration_Generic()
+		{
+			IHostBuilder hostBuilder = new HostBuilder();
+
+			Assert.Same(hostBuilder, hostBuilder.UseEnvironment<HostBuilderExtensionsTests>());
+
+			IHost host = hostBuilder.Build();
+
+			IHostEnvironment environment = host.Services.GetRequiredService<IHostEnvironment>();
+			Assert.False(String.IsNullOrEmpty(environment.EnvironmentName));
+			Assert.NotEqual(Environments.Staging, environment.EnvironmentName);
+		}
+
+		[Fact]
 		public void ConfigureApplicationFromAssemblyProduct()
 		{
 			IHostBuilder hostBuilder = new HostBuilder();
@@ -75,6 +102,19 @@ namespace F0.Tests.Hosting
 			AssemblyProductAttribute? product = assembly.GetCustomAttribute<AssemblyProductAttribute>();
 			Assert.NotNull(product);
 			Assert.Equal("F0.Cli.Tests", product.Product);
+
+			IHostEnvironment environment = host.Services.GetRequiredService<IHostEnvironment>();
+			Assert.Equal("F0.Cli.Tests", environment.ApplicationName);
+		}
+
+		[Fact]
+		public void ConfigureApplicationFromAssemblyProduct_Generic()
+		{
+			IHostBuilder hostBuilder = new HostBuilder();
+
+			Assert.Same(hostBuilder, hostBuilder.UseApplicationName<HostBuilderExtensionsTests>());
+
+			IHost host = hostBuilder.Build();
 
 			IHostEnvironment environment = host.Services.GetRequiredService<IHostEnvironment>();
 			Assert.Equal("F0.Cli.Tests", environment.ApplicationName);
@@ -100,9 +140,27 @@ namespace F0.Tests.Hosting
 
 			CommandContext context = host.Services.GetService<CommandContext>();
 			Assert.Equal(new[] { "F0.Cli" }, context.CommandLineArgs);
+			Assert.Equal(assembly, context.CommandAssembly);
 
 			IEnumerable<IHostedService> services = host.Services.GetServices<IHostedService>();
-			Assert.IsType<CommandLineBackgroundService>(services.Single());
+			IHostedService service = Assert.Single(services);
+			Assert.IsType<CommandLineBackgroundService>(service);
+		}
+
+		[Fact]
+		public void UseCli_Generic()
+		{
+			IHostBuilder hostBuilder = new HostBuilder();
+
+			Assert.Throws<ArgumentNullException>("args", () => HostBuilderExtensions.UseCli<HostBuilderExtensionsTests>(hostBuilder, null!));
+
+			string[] args = new[] { "0x_F0" };
+			Assert.Same(hostBuilder, hostBuilder.UseCli<HostBuilderExtensionsTests>(args));
+			IHost host = hostBuilder.Build();
+
+			CommandContext context = host.Services.GetService<CommandContext>();
+			Assert.Equal(args, context.CommandLineArgs);
+			Assert.Equal(typeof(HostBuilderExtensionsTests).Assembly, context.CommandAssembly);
 		}
 
 		[Fact]

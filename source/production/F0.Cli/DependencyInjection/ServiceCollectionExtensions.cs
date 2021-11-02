@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace F0.DependencyInjection
 {
-	public static class ServiceCollectionExtensions
+	public static partial class ServiceCollectionExtensions
 	{
 		public static IServiceCollection AddCli(this IServiceCollection services, Assembly commandAssembly, string[] args)
 		{
@@ -26,6 +26,16 @@ namespace F0.DependencyInjection
 			services.AddHostedService<CommandLineBackgroundService>();
 
 			return services;
+		}
+	}
+
+	public static partial class ServiceCollectionExtensions
+	{
+		public static IServiceCollection AddCli<TApplicationPart>(this IServiceCollection services, string[] args)
+		{
+			Assembly commandAssembly = typeof(TApplicationPart).Assembly;
+
+			return services.AddCli(commandAssembly, args);
 		}
 	}
 }

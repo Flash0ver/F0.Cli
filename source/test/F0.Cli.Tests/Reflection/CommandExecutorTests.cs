@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using F0.Cli;
@@ -54,7 +53,8 @@ namespace F0.Tests.Reflection
 				Assert.NotSame(task, inner.Task);
 				Assert.Equal(TaskStatus.Faulted, task.Status);
 				Assert.NotNull(task.Exception);
-				Assert.Same(exception, task.Exception.InnerExceptions.Single());
+				Exception innerException = Assert.Single(task.Exception.InnerExceptions);
+				Assert.Same(exception, innerException);
 			}
 		}
 

@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using F0.Cli;
 using F0.DependencyInjection;
 using F0.Hosting;
 using F0.IO;
+using F0.Tests.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -34,6 +37,14 @@ namespace F0.Tests.DependencyInjection
 		}
 
 		[Fact]
+		public void ApiIsFluent_Generic()
+		{
+			IServiceCollection services = new ServiceCollection();
+
+			Assert.Same(services, services.AddCli<ServiceCollectionExtensionsTests>(Array.Empty<string>()));
+		}
+
+		[Fact]
 		public void ConfigureServices()
 		{
 			IServiceCollection services = new ServiceCollection();
@@ -54,6 +65,32 @@ namespace F0.Tests.DependencyInjection
 			ServiceDescriptor backgroundService = services.Single(d => d.ImplementationType == typeof(CommandLineBackgroundService));
 			Assert.Equal(typeof(IHostedService), backgroundService.ServiceType);
 			Assert.Equal(ServiceLifetime.Singleton, backgroundService.Lifetime);
+		}
+
+		[Fact]
+		public void ConfigureServices_Generic()
+		{
+			IServiceCollection services = new ServiceCollection();
+			string[] args = new[] { "0x_F0" };
+			services.AddCli<ServiceCollectionExtensionsTests>(args);
+
+			services.AddSingleton<IHostApplicationLifetime>(static sp => new TestApplicationLifetime(() => Debug.Fail("Should not be invoked.")));
+
+			using ServiceProvider serviceProvider = services.BuildServiceProvider();
+
+			IOptions<ConsoleLifetimeOptions> lifetime = serviceProvider.GetRequiredService<IOptions<ConsoleLifetimeOptions>>();
+			Assert.True(lifetime.Value.SuppressStatusMessages);
+
+			IReporter reporter = serviceProvider.GetRequiredService<IReporter>();
+			Assert.IsType<ConsoleReporter>(reporter);
+
+			CommandContext context = serviceProvider.GetRequiredService<CommandContext>();
+			Assert.Equal(args, context.CommandLineArgs);
+			Assert.Equal(assembly, context.CommandAssembly);
+
+			IEnumerable<IHostedService> hostedServices = serviceProvider.GetServices<IHostedService>();
+			IHostedService backgroundService = Assert.Single(hostedServices);
+			Assert.IsType<CommandLineBackgroundService>(backgroundService);
 		}
 	}
 }

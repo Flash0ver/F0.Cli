@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +18,8 @@ namespace F0.Tests.Hosting
 		[Fact]
 		public void CanBeRegisteredAndCanBeResolved()
 		{
-			ConstructorInfo constructor = typeof(CommandLineBackgroundService).GetConstructors().Single();
+			ConstructorInfo[] constructors = typeof(CommandLineBackgroundService).GetConstructors();
+			ConstructorInfo constructor = Assert.Single(constructors);
 			Assert.True(constructor.IsPublic);
 		}
 
