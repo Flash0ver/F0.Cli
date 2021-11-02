@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using F0.DependencyInjection;
 using Microsoft.Extensions.Configuration;
@@ -9,9 +10,9 @@ namespace F0.Hosting
 {
 	public static class HostBuilderExtensions
 	{
-		public static IHostBuilder UseAssemblyAttributes(this IHostBuilder hostBuilder)
+		public static IHostBuilder UseAssemblyAttributes(this IHostBuilder hostBuilder, Assembly assembly)
 		{
-			Assembly assembly = Assembly.GetEntryAssembly();
+			_ = assembly ?? throw new ArgumentNullException(nameof(assembly));
 
 			return hostBuilder
 				.UseEnvironment(assembly)
@@ -20,7 +21,10 @@ namespace F0.Hosting
 
 		public static IHostBuilder UseEnvironment(this IHostBuilder hostBuilder, Assembly assembly)
 		{
-			AssemblyConfigurationAttribute configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
+			_ = assembly ?? throw new ArgumentNullException(nameof(assembly));
+
+			AssemblyConfigurationAttribute? configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
+			Debug.Assert(configuration is not null, $"{nameof(Assembly)} '{assembly}' does not contain expected attribute '{nameof(AssemblyConfigurationAttribute)}'.");
 
 			string environment = configuration.Configuration switch
 			{
@@ -34,16 +38,22 @@ namespace F0.Hosting
 
 		public static IHostBuilder UseApplicationName(this IHostBuilder hostBuilder, Assembly assembly)
 		{
-			AssemblyProductAttribute product = assembly.GetCustomAttribute<AssemblyProductAttribute>();
+			_ = assembly ?? throw new ArgumentNullException(nameof(assembly));
+
+			AssemblyProductAttribute? product = assembly.GetCustomAttribute<AssemblyProductAttribute>();
+			Debug.Assert(product is not null, $"{nameof(Assembly)} '{assembly}' does not contain expected attribute '{nameof(AssemblyProductAttribute)}'.");
 
 			return hostBuilder.UseSetting(HostDefaults.ApplicationKey, product.Product);
 		}
 
-		public static IHostBuilder UseCli(this IHostBuilder hostBuilder, string[] args)
+		public static IHostBuilder UseCli(this IHostBuilder hostBuilder, Assembly commandAssembly, string[] args)
 		{
+			_ = commandAssembly ?? throw new ArgumentNullException(nameof(commandAssembly));
+			_ = args ?? throw new ArgumentNullException(nameof(args));
+
 			return hostBuilder.ConfigureServices((hostingContext, services) =>
 			{
-				services.AddCli(args);
+				services.AddCli(commandAssembly, args);
 			});
 		}
 

@@ -19,18 +19,23 @@ namespace F0.Tests.Hosting
 		public void ConfigureFromAssemblyInfo()
 		{
 			IHostBuilder hostBuilder = new HostBuilder();
-			Assert.Same(hostBuilder, hostBuilder.UseAssemblyAttributes());
 
-			Assembly assembly = Assembly.GetEntryAssembly();
+			Assert.Throws<ArgumentNullException>("assembly", () => HostBuilderExtensions.UseAssemblyAttributes(hostBuilder, null!));
+
+			Assembly assembly = GetAssembly();
+			Assert.Same(hostBuilder, hostBuilder.UseAssemblyAttributes(assembly));
+
 			IHost host = hostBuilder.Build();
 			IHostEnvironment environment = host.Services.GetRequiredService<IHostEnvironment>();
 
-			AssemblyConfigurationAttribute configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
-			Assert.Equal("", configuration.Configuration);
-			Assert.Equal(Environments.Staging, environment.EnvironmentName);
+			AssemblyConfigurationAttribute? configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
+			Assert.NotNull(configuration);
+			Assert.Equal(GetConfiguration(), configuration.Configuration);
+			Assert.Equal(GetEnvironmentName(), environment.EnvironmentName);
 
-			AssemblyProductAttribute product = assembly.GetCustomAttribute<AssemblyProductAttribute>();
-			Assert.Contains("Test", product.Product);
+			AssemblyProductAttribute? product = assembly.GetCustomAttribute<AssemblyProductAttribute>();
+			Assert.NotNull(product);
+			Assert.Equal(GetApplicationName(), product.Product);
 			Assert.Equal(product.Product, environment.ApplicationName);
 		}
 
@@ -39,13 +44,16 @@ namespace F0.Tests.Hosting
 		{
 			IHostBuilder hostBuilder = new HostBuilder();
 
+			Assert.Throws<ArgumentNullException>("assembly", () => HostBuilderExtensions.UseEnvironment(hostBuilder, null!));
+
 			Assembly assembly = typeof(HostBuilderExtensionsTests).Assembly;
 			Assert.Same(hostBuilder, hostBuilder.UseEnvironment(assembly));
 
 			IHost host = hostBuilder.Build();
 
-			AssemblyConfigurationAttribute configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
-			Assert.True(configuration.Configuration == "Debug" || configuration.Configuration == "Release");
+			AssemblyConfigurationAttribute? configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
+			Assert.NotNull(configuration);
+			Assert.True(configuration.Configuration is "Debug" or "Release");
 
 			IHostEnvironment environment = host.Services.GetRequiredService<IHostEnvironment>();
 			string environmentName = configuration.Configuration == "Debug" ? Environments.Development : Environments.Production;
@@ -57,12 +65,15 @@ namespace F0.Tests.Hosting
 		{
 			IHostBuilder hostBuilder = new HostBuilder();
 
+			Assert.Throws<ArgumentNullException>("assembly", () => HostBuilderExtensions.UseApplicationName(hostBuilder, null!));
+
 			Assembly assembly = typeof(HostBuilderExtensionsTests).Assembly;
 			Assert.Same(hostBuilder, hostBuilder.UseApplicationName(assembly));
 
 			IHost host = hostBuilder.Build();
 
-			AssemblyProductAttribute product = assembly.GetCustomAttribute<AssemblyProductAttribute>();
+			AssemblyProductAttribute? product = assembly.GetCustomAttribute<AssemblyProductAttribute>();
+			Assert.NotNull(product);
 			Assert.Equal("F0.Cli.Tests", product.Product);
 
 			IHostEnvironment environment = host.Services.GetRequiredService<IHostEnvironment>();
@@ -73,7 +84,12 @@ namespace F0.Tests.Hosting
 		public void UseCli()
 		{
 			IHostBuilder hostBuilder = new HostBuilder();
-			Assert.Same(hostBuilder, hostBuilder.UseCli(new string[] { "F0.Cli" }));
+			Assembly assembly = typeof(HostBuilderExtensionsTests).Assembly;
+
+			Assert.Throws<ArgumentNullException>("commandAssembly", () => HostBuilderExtensions.UseCli(hostBuilder, null!, Array.Empty<string>()));
+			Assert.Throws<ArgumentNullException>("args", () => HostBuilderExtensions.UseCli(hostBuilder, assembly, null!));
+
+			Assert.Same(hostBuilder, hostBuilder.UseCli(assembly, new string[] { "F0.Cli" }));
 			IHost host = hostBuilder.Build();
 
 			IOptions<ConsoleLifetimeOptions> lifetime = host.Services.GetRequiredService<IOptions<ConsoleLifetimeOptions>>();
@@ -93,7 +109,9 @@ namespace F0.Tests.Hosting
 		public void UseDefault_HostOptions_ShutdownTimeout()
 		{
 			IHostBuilder hostBuilder = new HostBuilder();
-			Assert.Same(hostBuilder, hostBuilder.UseCli(Array.Empty<string>()));
+			Assembly assembly = typeof(HostBuilderExtensionsTests).Assembly;
+
+			Assert.Same(hostBuilder, hostBuilder.UseCli(assembly, Array.Empty<string>()));
 			IHost host = hostBuilder.Build();
 
 			TimeSpan timeout = new HostOptions().ShutdownTimeout;
@@ -106,8 +124,8 @@ namespace F0.Tests.Hosting
 		{
 			IHostBuilder hostBuilder = new HostBuilder();
 
-			Assert.Throws<ArgumentNullException>("key", () => hostBuilder.UseSetting(null!, ""));
-			Assert.Throws<ArgumentNullException>("value", () => hostBuilder.UseSetting("", null!));
+			Assert.Throws<ArgumentNullException>("key", () => HostBuilderExtensions.UseSetting(hostBuilder, null!, ""));
+			Assert.Throws<ArgumentNullException>("value", () => HostBuilderExtensions.UseSetting(hostBuilder, "", null!));
 
 			Assert.Same(hostBuilder, hostBuilder.UseSetting("Key", "Value"));
 
@@ -115,6 +133,48 @@ namespace F0.Tests.Hosting
 			IConfiguration configuration = host.Services.GetRequiredService<IConfiguration>();
 
 			Assert.Equal("Value", configuration["Key"]);
+		}
+
+		private static Assembly GetAssembly()
+		{
+#if NETFRAMEWORK
+			return typeof(HostBuilderExtensionsTests).Assembly;
+#else
+			Assembly? assembly = Assembly.GetEntryAssembly();
+			Assert.NotNull(assembly);
+			return assembly;
+#endif
+		}
+
+		private static string GetConfiguration()
+		{
+#if !NETFRAMEWORK
+			return String.Empty;
+#elif DEBUG
+			return "Debug";
+#else
+			return "Release";
+#endif
+		}
+
+		private static string GetEnvironmentName()
+		{
+#if !NETFRAMEWORK
+			return Environments.Staging;
+#elif DEBUG
+			return Environments.Development;
+#else
+			return Environments.Production;
+#endif
+		}
+
+		private static string GetApplicationName()
+		{
+#if NETFRAMEWORK
+			return typeof(HostBuilderExtensionsTests).Assembly.GetName().Name;
+#else
+			return "Microsoft.TestHost";
+#endif
 		}
 	}
 }

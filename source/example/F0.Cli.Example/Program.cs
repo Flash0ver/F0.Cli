@@ -35,12 +35,12 @@ namespace F0.Cli.Example
 		public static IHostBuilder CreateHostBuilder(string[] args)
 		{
 			HostBuilder builder = new();
-			builder.UseAssemblyAttributes();
+			builder.UseAssemblyAttributes(typeof(Program).Assembly);
 			builder.ConfigureServices(static (hostContext, services) =>
 			{
 				services.AddHttpClient<INuGetClient, NuGetClient>();
 			});
-			return builder.UseCli(args);
+			return builder.UseCli(typeof(Program).Assembly, args);
 		}
 	}
 }
