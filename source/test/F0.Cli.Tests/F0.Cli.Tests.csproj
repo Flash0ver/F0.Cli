@@ -11,6 +11,10 @@
     <NoWarn>$(NoWarn);NETSDK1138</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))">
+    <NoWarn>$(NoWarn);CS8778</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="xunit" Version="2.4.2-pre.12" />

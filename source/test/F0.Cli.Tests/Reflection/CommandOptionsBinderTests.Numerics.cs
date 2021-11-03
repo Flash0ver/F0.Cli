@@ -15,7 +15,7 @@ namespace F0.Tests.Reflection
 		public void OptionsWithValuesMayBeBoundToNumericPropertiesWherePropertyNameMatchesOptionKey_Positive()
 		{
 			NumericCommand command = new();
-			CommandLineArguments args = CreateArgs(("sbyte", "111"), ("byte", "222"), ("int16", "333"), ("uint16", "444"), ("int32", "555"), ("uint32", "666"), ("int64", "777"), ("uint64", "888"), ("single", "1.1"), ("double", "2.2"), ("decimal", "3.3"), ("bigint", "999"));
+			CommandLineArguments args = CreateArgs(("sbyte", "111"), ("byte", "222"), ("int16", "333"), ("uint16", "444"), ("int32", "555"), ("uint32", "666"), ("int64", "777"), ("uint64", "888"), ("intptr", "240"), ("uintptr", "240"), ("single", "1.1"), ("double", "2.2"), ("decimal", "3.3"), ("bigint", "999"));
 
 			Assert.Equal(default, command.SByte);
 			Assert.Equal(default, command.Byte);
@@ -25,6 +25,8 @@ namespace F0.Tests.Reflection
 			Assert.Equal(default, command.UInt32);
 			Assert.Equal(default, command.Int64);
 			Assert.Equal(default, command.UInt64);
+			Assert.Equal(default, command.IntPtr);
+			Assert.Equal(default, command.UIntPtr);
 			Assert.Equal(default, command.Single);
 			Assert.Equal(default, command.Double);
 			Assert.Equal(default, command.Decimal);
@@ -40,6 +42,8 @@ namespace F0.Tests.Reflection
 			Assert.Equal(666u, command.UInt32);
 			Assert.Equal(777L, command.Int64);
 			Assert.Equal(888ul, command.UInt64);
+			Assert.Equal((nint)0x_F0, command.IntPtr);
+			Assert.Equal((nuint)0x_F0, command.UIntPtr);
 			Assert.Equal(1.1f, command.Single);
 			Assert.Equal(2.2, command.Double);
 			Assert.Equal(3.3m, command.Decimal);
@@ -50,12 +54,13 @@ namespace F0.Tests.Reflection
 		public void OptionsWithValuesMayBeBoundToNumericPropertiesWherePropertyNameMatchesOptionKey_Negative()
 		{
 			NumericCommand command = new();
-			CommandLineArguments args = CreateArgs(("sbyte", "-111"), ("int16", "-333"), ("int32", "-555"), ("int64", "-777"), ("single", "-1.1"), ("double", "-2.2"), ("decimal", "-3.3"), ("bigint", "-999"));
+			CommandLineArguments args = CreateArgs(("sbyte", "-111"), ("int16", "-333"), ("int32", "-555"), ("int64", "-777"), ("intptr", "-240"), ("single", "-1.1"), ("double", "-2.2"), ("decimal", "-3.3"), ("bigint", "-999"));
 
 			Assert.Equal(default, command.SByte);
 			Assert.Equal(default, command.Int16);
 			Assert.Equal(default, command.Int32);
 			Assert.Equal(default, command.Int64);
+			Assert.Equal(default, command.IntPtr);
 			Assert.Equal(default, command.Single);
 			Assert.Equal(default, command.Double);
 			Assert.Equal(default, command.Decimal);
@@ -67,6 +72,7 @@ namespace F0.Tests.Reflection
 			Assert.Equal((short)-333, command.Int16);
 			Assert.Equal(-555, command.Int32);
 			Assert.Equal(-777L, command.Int64);
+			Assert.Equal((nint)(-0x_F0), command.IntPtr);
 			Assert.Equal(-1.1f, command.Single);
 			Assert.Equal(-2.2, command.Double);
 			Assert.Equal(-3.3m, command.Decimal);
@@ -168,7 +174,8 @@ namespace F0.Tests.Reflection
 				new object[] { "byte", "-222" },
 				new object[] { "uint16", "-444" },
 				new object[] { "uint32", "-666" },
-				new object[] { "uint64", "-888" }
+				new object[] { "uint64", "-888" },
+				new object[] { "uintptr", "-240" },
 			};
 		}
 
@@ -184,8 +191,32 @@ namespace F0.Tests.Reflection
 				new object[] { "uint32", $"{UInt32.MaxValue}0" },
 				new object[] { "int64", $"{Int64.MaxValue}0" },
 				new object[] { "uint64", $"{UInt64.MaxValue}0" },
+				new object[] { "intptr", $"{Get_IntPtr_MaxValue()}0" },
+				new object[] { "uintptr", $"{Get_UIntPtr_MaxValue()}0" },
 				new object[] { "decimal", $"1{Decimal.MaxValue.ToString(NumberFormatInfo.InvariantInfo)}" },
 			};
+
+			static nint Get_IntPtr_MaxValue()
+			{
+#if HAS_NATIVE_SIZED_INTEGERS
+				return IntPtr.MaxValue;
+#else
+				return Environment.Is64BitProcess
+					? (nint)Int64.MaxValue
+					: (nint)Int32.MaxValue;
+#endif
+			}
+
+			static nuint Get_UIntPtr_MaxValue()
+			{
+#if HAS_NATIVE_SIZED_INTEGERS
+				return UIntPtr.MaxValue;
+#else
+				return Environment.Is64BitProcess
+					? (nuint)UInt64.MaxValue
+					: (nuint)UInt32.MaxValue;
+#endif
+			}
 		}
 
 		public static IEnumerable<object[]> GetOverflowMinimumTestData()
@@ -196,8 +227,20 @@ namespace F0.Tests.Reflection
 				new object[] { "int16", $"{Int16.MinValue}0" },
 				new object[] { "int32", $"{Int32.MinValue}0" },
 				new object[] { "int64", $"{Int64.MinValue}0" },
+				new object[] { "intptr", $"{Get_IntPtr_MinValue()}0" },
 				new object[] { "decimal", $"{Decimal.MinValue.ToString(NumberFormatInfo.InvariantInfo).Insert(1, "1")}" },
 			};
+
+			static nint Get_IntPtr_MinValue()
+			{
+#if HAS_NATIVE_SIZED_INTEGERS
+				return IntPtr.MinValue;
+#else
+				return Environment.Is64BitProcess
+					? (nint)Int64.MinValue
+					: (nint)Int32.MinValue;
+#endif
+			}
 		}
 
 		public static IEnumerable<object[]> GetThousandsSeparatorTestData()
@@ -213,6 +256,9 @@ namespace F0.Tests.Reflection
 				new object[] { "int64", "-9,223,372,036,854,775,808" },
 				new object[] { "int64", "9,223,372,036,854,775,807" },
 				new object[] { "uint64", "18,446,744,073,709,551,615" },
+				new object[] { "intptr", Get_IntPtr_MinValue() },
+				new object[] { "intptr", Get_IntPtr_MaxValue() },
+				new object[] { "uintptr", Get_UIntPtr_MaxValue() },
 				new object[] { "single", "-1,000.0" },
 				new object[] { "single", "1,000.0" },
 				new object[] { "double", "-1,000.0" },
@@ -222,6 +268,27 @@ namespace F0.Tests.Reflection
 				new object[] { "bigint", "-1,000" },
 				new object[] { "bigint", "1,000" },
 			};
+
+			static string Get_IntPtr_MinValue()
+			{
+				return Environment.Is64BitProcess
+					? "-9,223,372,036,854,775,808"
+					: "-2,147,483,648";
+			}
+
+			static string Get_IntPtr_MaxValue()
+			{
+				return Environment.Is64BitProcess
+					? "9,223,372,036,854,775,807"
+					: "2,147,483,647";
+			}
+
+			static string Get_UIntPtr_MaxValue()
+			{
+				return Environment.Is64BitProcess
+					? "18,446,744,073,709,551,615"
+					: "4,294,967,295";
+			}
 		}
 	}
 }

@@ -20,6 +20,8 @@ namespace F0.Tests.Commands
 		public uint UInt32 { get; set; }
 		public long Int64 { get; set; }
 		public ulong UInt64 { get; set; }
+		public nint IntPtr { get; set; }
+		public nuint UIntPtr { get; set; }
 		public float Single { get; set; }
 		public double Double { get; set; }
 		public decimal Decimal { get; set; }

@@ -4,6 +4,7 @@ CHANGELOG
 ## vNext
 - Added target framework: `.NET 5`.
 - Added annotations for _nullable reference types_.
+- Added option binding of _native-sized integers_, both `nint` and `nuint` (`System.IntPtr` and `System.UIntPtr`).
 - Changed _.NET Generic Host_ Builder extension methods to require the _Assembly_ containing the CLI _Commands_ to be passed (rather than using the entry assembly), or specify a type argument from that "Command-Assembly" instead.
 - Package: Embed icon (fixed _NuGet Warning NU5048_), keep fallback icon URL.
 

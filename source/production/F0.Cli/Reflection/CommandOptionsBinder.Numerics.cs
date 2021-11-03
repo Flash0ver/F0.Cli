@@ -17,6 +17,8 @@ namespace F0.Reflection
 			{ typeof(uint), new Converter<string, object>(ConvertUInt32)},
 			{ typeof(long), new Converter<string, object>(ConvertInt64)},
 			{ typeof(ulong), new Converter<string, object>(ConvertUInt64)},
+			{ typeof(nint), new Converter<string, object>(ConvertIntPtr)},
+			{ typeof(nuint), new Converter<string, object>(ConvertUIntPtr)},
 			{ typeof(float), new Converter<string, object>(ConvertSingle)},
 			{ typeof(double), new Converter<string, object>(ConvertDouble)},
 			{ typeof(decimal), new Converter<string, object>(ConvertDecimal)},
@@ -69,6 +71,52 @@ namespace F0.Reflection
 		{
 			ulong integral = UInt64.Parse(value, NumberStyles.None, NumberFormatInfo.InvariantInfo);
 			return integral;
+		}
+
+		private static object ConvertIntPtr(string value)
+		{
+#if HAS_NATIVE_SIZED_INTEGERS
+			nint native = IntPtr.Parse(value, NumberStyles.AllowLeadingSign, NumberFormatInfo.InvariantInfo);
+#else
+			nint native = Environment.Is64BitProcess
+				? FromInt64(value)
+				: FromInt32(value);
+
+			static nint FromInt64(string value)
+			{
+				long integral = Int64.Parse(value, NumberStyles.AllowLeadingSign, NumberFormatInfo.InvariantInfo);
+				return (nint)integral;
+			}
+			static nint FromInt32(string value)
+			{
+				int integral = Int32.Parse(value, NumberStyles.AllowLeadingSign, NumberFormatInfo.InvariantInfo);
+				return (nint)integral;
+			}
+#endif
+			return native;
+		}
+
+		private static object ConvertUIntPtr(string value)
+		{
+#if HAS_NATIVE_SIZED_INTEGERS
+			nuint native = UIntPtr.Parse(value, NumberStyles.None, NumberFormatInfo.InvariantInfo);
+#else
+			nuint native = Environment.Is64BitProcess
+				? FromUInt64(value)
+				: FromUInt32(value);
+
+			static nuint FromUInt64(string value)
+			{
+				ulong integral = UInt64.Parse(value, NumberStyles.None, NumberFormatInfo.InvariantInfo);
+				return (nuint)integral;
+			}
+			static nuint FromUInt32(string value)
+			{
+				uint integral = UInt32.Parse(value, NumberStyles.None, NumberFormatInfo.InvariantInfo);
+				return (nuint)integral;
+			}
+#endif
+			return native;
 		}
 
 		private static object ConvertSingle(string value)
