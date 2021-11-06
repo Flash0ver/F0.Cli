@@ -8,6 +8,7 @@ CHANGELOG
 - Added option binding of `System.Half` (applies to `.NET 5.0` _or greater_).
 - Changed _.NET Generic Host_ Builder extension methods to require the _Assembly_ containing the CLI _Commands_ to be passed (rather than using the entry assembly), or specify a type argument from that "Command-Assembly" instead.
 - Package: Embed icon (fixed _NuGet Warning NU5048_), keep fallback icon URL.
+- License: Changed to _MIT_ License.
 
 ## v0.5.0 (2020-10-27)
 - Added option binding of _built-in numeric types (C#)_ and `System.Numerics.BigInteger`.
