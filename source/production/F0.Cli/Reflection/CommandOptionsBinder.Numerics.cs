@@ -19,10 +19,13 @@ namespace F0.Reflection
 			{ typeof(ulong), new Converter<string, object>(ConvertUInt64)},
 			{ typeof(nint), new Converter<string, object>(ConvertIntPtr)},
 			{ typeof(nuint), new Converter<string, object>(ConvertUIntPtr)},
+			{ typeof(BigInteger), new Converter<string, object>(ConvertBigInteger) },
+#if HAS_HALF
+			{ typeof(Half), new Converter<string, object>(ConvertHalf)},
+#endif
 			{ typeof(float), new Converter<string, object>(ConvertSingle)},
 			{ typeof(double), new Converter<string, object>(ConvertDouble)},
 			{ typeof(decimal), new Converter<string, object>(ConvertDecimal)},
-			{ typeof(BigInteger), new Converter<string, object>(ConvertBigInteger) },
 		};
 
 		private static object ConvertSByte(string value)
@@ -119,6 +122,20 @@ namespace F0.Reflection
 			return native;
 		}
 
+		private static object ConvertBigInteger(string value)
+		{
+			BigInteger integral = BigInteger.Parse(value, NumberStyles.AllowLeadingSign, NumberFormatInfo.InvariantInfo);
+			return integral;
+		}
+
+#if HAS_HALF
+		private static object ConvertHalf(string value)
+		{
+			Half binary16 = Half.Parse(value, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, NumberFormatInfo.InvariantInfo);
+			return binary16;
+		}
+#endif
+
 		private static object ConvertSingle(string value)
 		{
 			float real = Single.Parse(value, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, NumberFormatInfo.InvariantInfo);
@@ -135,12 +152,6 @@ namespace F0.Reflection
 		{
 			decimal real = Decimal.Parse(value, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, NumberFormatInfo.InvariantInfo);
 			return real;
-		}
-
-		private static object ConvertBigInteger(string value)
-		{
-			BigInteger integral = BigInteger.Parse(value, NumberStyles.AllowLeadingSign, NumberFormatInfo.InvariantInfo);
-			return integral;
 		}
 	}
 }

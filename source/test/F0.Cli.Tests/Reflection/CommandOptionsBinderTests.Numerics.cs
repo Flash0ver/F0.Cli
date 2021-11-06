@@ -6,16 +6,28 @@ using F0.Cli;
 using F0.Reflection;
 using F0.Tests.Commands;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace F0.Tests.Reflection
 {
 	public partial class CommandOptionsBinderTests
 	{
+		private readonly ITestOutputHelper output;
+
+		public CommandOptionsBinderTests(ITestOutputHelper output)
+		{
+			this.output = output;
+		}
+
 		[Fact]
 		public void OptionsWithValuesMayBeBoundToNumericPropertiesWherePropertyNameMatchesOptionKey_Positive()
 		{
 			NumericCommand command = new();
-			CommandLineArguments args = CreateArgs(("sbyte", "111"), ("byte", "222"), ("int16", "333"), ("uint16", "444"), ("int32", "555"), ("uint32", "666"), ("int64", "777"), ("uint64", "888"), ("intptr", "240"), ("uintptr", "240"), ("single", "1.1"), ("double", "2.2"), ("decimal", "3.3"), ("bigint", "999"));
+#if HAS_HALF
+			CommandLineArguments args = CreateArgs(("sbyte", "111"), ("byte", "222"), ("int16", "333"), ("uint16", "444"), ("int32", "555"), ("uint32", "666"), ("int64", "777"), ("uint64", "888"), ("intptr", "240"), ("uintptr", "240"), ("bigint", "999"), ("half", "1.1"), ("single", "2.2"), ("double", "3.3"), ("decimal", "4.4"));
+#else
+			CommandLineArguments args = CreateArgs(("sbyte", "111"), ("byte", "222"), ("int16", "333"), ("uint16", "444"), ("int32", "555"), ("uint32", "666"), ("int64", "777"), ("uint64", "888"), ("intptr", "240"), ("uintptr", "240"), ("bigint", "999"), ("single", "2.2"), ("double", "3.3"), ("decimal", "4.4"));
+#endif
 
 			Assert.Equal(default, command.SByte);
 			Assert.Equal(default, command.Byte);
@@ -27,10 +39,13 @@ namespace F0.Tests.Reflection
 			Assert.Equal(default, command.UInt64);
 			Assert.Equal(default, command.IntPtr);
 			Assert.Equal(default, command.UIntPtr);
+			Assert.Equal(default, command.BigInt);
+#if HAS_HALF
+			Assert.Equal(default, command.Half);
+#endif
 			Assert.Equal(default, command.Single);
 			Assert.Equal(default, command.Double);
 			Assert.Equal(default, command.Decimal);
-			Assert.Equal(default, command.BigInt);
 
 			CommandOptionsBinder.BindOptions(command, args);
 
@@ -44,27 +59,37 @@ namespace F0.Tests.Reflection
 			Assert.Equal(888ul, command.UInt64);
 			Assert.Equal((nint)0x_F0, command.IntPtr);
 			Assert.Equal((nuint)0x_F0, command.UIntPtr);
-			Assert.Equal(1.1f, command.Single);
-			Assert.Equal(2.2, command.Double);
-			Assert.Equal(3.3m, command.Decimal);
 			Assert.Equal(new BigInteger(999), command.BigInt);
+#if HAS_HALF
+			Assert.Equal((Half)1.1f, command.Half);
+#endif
+			Assert.Equal(2.2f, command.Single);
+			Assert.Equal(3.3, command.Double);
+			Assert.Equal(4.4m, command.Decimal);
 		}
 
 		[Fact]
 		public void OptionsWithValuesMayBeBoundToNumericPropertiesWherePropertyNameMatchesOptionKey_Negative()
 		{
 			NumericCommand command = new();
-			CommandLineArguments args = CreateArgs(("sbyte", "-111"), ("int16", "-333"), ("int32", "-555"), ("int64", "-777"), ("intptr", "-240"), ("single", "-1.1"), ("double", "-2.2"), ("decimal", "-3.3"), ("bigint", "-999"));
+#if HAS_HALF
+			CommandLineArguments args = CreateArgs(("sbyte", "-111"), ("int16", "-333"), ("int32", "-555"), ("int64", "-777"), ("intptr", "-240"), ("bigint", "-999"), ("half", "-1.1"), ("single", "-2.2"), ("double", "-3.3"), ("decimal", "-4.4"));
+#else
+			CommandLineArguments args = CreateArgs(("sbyte", "-111"), ("int16", "-333"), ("int32", "-555"), ("int64", "-777"), ("intptr", "-240"), ("bigint", "-999"), ("single", "-2.2"), ("double", "-3.3"), ("decimal", "-4.4"));
+#endif
 
 			Assert.Equal(default, command.SByte);
 			Assert.Equal(default, command.Int16);
 			Assert.Equal(default, command.Int32);
 			Assert.Equal(default, command.Int64);
 			Assert.Equal(default, command.IntPtr);
+			Assert.Equal(default, command.BigInt);
+#if HAS_HALF
+			Assert.Equal(default, command.Half);
+#endif
 			Assert.Equal(default, command.Single);
 			Assert.Equal(default, command.Double);
 			Assert.Equal(default, command.Decimal);
-			Assert.Equal(default, command.BigInt);
 
 			CommandOptionsBinder.BindOptions(command, args);
 
@@ -73,10 +98,13 @@ namespace F0.Tests.Reflection
 			Assert.Equal(-555, command.Int32);
 			Assert.Equal(-777L, command.Int64);
 			Assert.Equal((nint)(-0x_F0), command.IntPtr);
-			Assert.Equal(-1.1f, command.Single);
-			Assert.Equal(-2.2, command.Double);
-			Assert.Equal(-3.3m, command.Decimal);
 			Assert.Equal(new BigInteger(-999), command.BigInt);
+#if HAS_HALF
+			Assert.Equal((Half)(-1.1f), command.Half);
+#endif
+			Assert.Equal(-2.2f, command.Single);
+			Assert.Equal(-3.3, command.Double);
+			Assert.Equal(-4.4m, command.Decimal);
 		}
 
 		[Theory]
@@ -153,6 +181,29 @@ namespace F0.Tests.Reflection
 			Exception binary64 = Assert.Throws<CommandOptionBindingException>(() => CommandOptionsBinder.BindOptions(command, CreateArgs(("double", minDouble.Insert(1, "1")))));
 			Assert.IsType<OverflowException>(binary32.InnerException);
 			Assert.IsType<OverflowException>(binary64.InnerException);
+#endif
+		}
+
+		[Fact]
+		public void Overflow_Half()
+		{
+#if HAS_HALF
+			string maxHalf = Half.MaxValue.ToString("F", NumberFormatInfo.InvariantInfo);
+			string minHalf = Half.MinValue.ToString("F", NumberFormatInfo.InvariantInfo);
+
+			NumericCommand maximum = new();
+			NumericCommand minimum = new();
+
+			CommandLineArguments max = CreateArgs(("half", $"1{maxHalf}"));
+			CommandLineArguments min = CreateArgs(("half", minHalf.Insert(1, "1")));
+
+			CommandOptionsBinder.BindOptions(maximum, max);
+			CommandOptionsBinder.BindOptions(minimum, min);
+
+			Assert.Equal(Half.PositiveInfinity, maximum.Half);
+			Assert.Equal(Half.NegativeInfinity, minimum.Half);
+#else
+			output.WriteLine("'Half' is available in .NET 5.0 or greater.");
 #endif
 		}
 
@@ -259,14 +310,18 @@ namespace F0.Tests.Reflection
 				new object[] { "intptr", Get_IntPtr_MinValue() },
 				new object[] { "intptr", Get_IntPtr_MaxValue() },
 				new object[] { "uintptr", Get_UIntPtr_MaxValue() },
+				new object[] { "bigint", "-1,000" },
+				new object[] { "bigint", "1,000" },
+#if HAS_HALF
+				new object[] { "half", "-1,000.0" },
+				new object[] { "half", "1,000.0" },
+#endif
 				new object[] { "single", "-1,000.0" },
 				new object[] { "single", "1,000.0" },
 				new object[] { "double", "-1,000.0" },
 				new object[] { "double", "1,000.0" },
 				new object[] { "decimal", "-1,000.0" },
 				new object[] { "decimal", "1,000.0" },
-				new object[] { "bigint", "-1,000" },
-				new object[] { "bigint", "1,000" },
 			};
 
 			static string Get_IntPtr_MinValue()

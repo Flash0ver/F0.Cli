@@ -22,10 +22,13 @@ namespace F0.Tests.Commands
 		public ulong UInt64 { get; set; }
 		public nint IntPtr { get; set; }
 		public nuint UIntPtr { get; set; }
+		public BigInteger BigInt { get; set; }
+#if HAS_HALF
+		public Half Half { get; set; }
+#endif
 		public float Single { get; set; }
 		public double Double { get; set; }
 		public decimal Decimal { get; set; }
-		public BigInteger BigInt { get; set; }
 
 		public override Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{

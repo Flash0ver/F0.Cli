@@ -15,6 +15,7 @@
   <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))">
     <DefineConstants>$(DefineConstants);HAS_TASKCOMPLETIONSOURCE</DefineConstants>
     <DefineConstants>$(DefineConstants);HAS_NATIVE_SIZED_INTEGERS</DefineConstants>
+    <DefineConstants>$(DefineConstants);HAS_HALF</DefineConstants>
   </PropertyGroup>
 
 </Project>
