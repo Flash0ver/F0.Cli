@@ -10,7 +10,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageId>F0.Cli</PackageId>
-    <Version>0.5.0</Version>
+    <Version>$(F0Version)</Version>
     <Authors>Flash0ver</Authors>
     <Company>f[0]</Company>
     <Product>F0.Cli</Product>
@@ -23,7 +23,7 @@
     <RepositoryUrl>https://github.com/Flash0ver/F0.Cli.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>f[0] f0 cli</PackageTags>
-    <PackageReleaseNotes>Added option binding of built-in numeric types (C#) and System.Numerics.BigInteger.</PackageReleaseNotes>
+    <PackageReleaseNotes>$(F0PackageReleaseNotes)</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
