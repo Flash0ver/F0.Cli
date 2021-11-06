@@ -138,7 +138,7 @@ namespace F0.Tests.Hosting
 			IReporter reporter = host.Services.GetRequiredService<IReporter>();
 			Assert.IsType<ConsoleReporter>(reporter);
 
-			CommandContext context = host.Services.GetService<CommandContext>();
+			CommandContext context = host.Services.GetRequiredService<CommandContext>();
 			Assert.Equal(new[] { "F0.Cli" }, context.CommandLineArgs);
 			Assert.Equal(assembly, context.CommandAssembly);
 
@@ -158,7 +158,7 @@ namespace F0.Tests.Hosting
 			Assert.Same(hostBuilder, hostBuilder.UseCli<HostBuilderExtensionsTests>(args));
 			IHost host = hostBuilder.Build();
 
-			CommandContext context = host.Services.GetService<CommandContext>();
+			CommandContext context = host.Services.GetRequiredService<CommandContext>();
 			Assert.Equal(args, context.CommandLineArgs);
 			Assert.Equal(typeof(HostBuilderExtensionsTests).Assembly, context.CommandAssembly);
 		}

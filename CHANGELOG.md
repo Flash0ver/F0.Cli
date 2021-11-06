@@ -7,8 +7,9 @@ CHANGELOG
 - Added option binding of _native-sized integers_, both `nint` and `nuint` (`System.IntPtr` and `System.UIntPtr`).
 - Added option binding of `System.Half` (applies to `.NET 5.0` _or greater_).
 - Changed _.NET Generic Host_ Builder extension methods to require the _Assembly_ containing the CLI _Commands_ to be passed (rather than using the entry assembly), or specify a type argument from that "Command-Assembly" instead.
-- Package: Embed icon (fixed _NuGet Warning NU5048_), keep fallback icon URL.
+- Updated dependency on Generic Host from `Microsoft.Extensions.Hosting 3.1.9` to `Microsoft.Extensions.Hosting 5.0.0`.
 - License: Changed to _MIT_ License.
+- Package: Embed icon (fixed _NuGet Warning NU5048_), keep fallback icon URL.
 
 ## v0.5.0 (2020-10-27)
 - Added option binding of _built-in numeric types (C#)_ and `System.Numerics.BigInteger`.
