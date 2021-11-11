@@ -5,17 +5,15 @@ using F0.Cli;
 
 namespace F0.Tests.Commands
 {
-	internal sealed class InternalCommand : CommandBase
+	public sealed class InitOnlyCommand : CommandBase
 	{
-		internal const string Name = "internal";
-
-		public InternalCommand()
+		public InitOnlyCommand()
 		{
 		}
 
-		internal string[]? Args { get; set; }
+		public string[]? Args { get; init; }
 
-		internal string? Internal { get; set; }
+		public string? InitOnly { get; init; }
 
 		public override Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{

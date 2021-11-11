@@ -13,7 +13,7 @@ namespace F0.Tests.Logging
 		[Fact]
 		public void EventId_IsUniqueErrorLevel()
 		{
-			HashSet<int> set = new();
+			ISet<int> set = new HashSet<int>();
 			foreach (LoggingEventsData data in LoggingEventsData.Data)
 			{
 				Assert.True(set.Add(data.Id), $"Duplicate: {data.Id:X}");

@@ -24,12 +24,12 @@ namespace F0.Cli.Example.Commands
 			this.nuGetService = nuGetService;
 		}
 
-		public IEnumerable<string>? Arguments { get; set; }
+		public IEnumerable<string>? Arguments { get; internal set; }
 
-		public string? Owner { get; set; }
-		public string? Tag { get; set; }
-		public int Skip { get; set; }
-		public int Take { get; set; }
+		public string? Owner { get; internal init; }
+		public string? Tag { get; internal init; }
+		public int Skip { get; internal init; }
+		public int Take { get; internal init; }
 
 		public override async Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{

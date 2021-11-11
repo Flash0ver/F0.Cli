@@ -78,6 +78,35 @@ namespace F0.Tests.Reflection
 			CommandArgumentsBinder.BindArguments(command, args);
 		}
 
+		[Fact]
+		public void BindingRequiresPublicSetAccessor_MustNotBeNonPublic()
+		{
+			InternalCommand command = new();
+			CommandLineArguments args = CreateArgs("internal");
+
+			Assert.Throws<CommandArgumentsNotFoundException>(() => CommandArgumentsBinder.BindArguments(command, args));
+		}
+
+		[Fact]
+		public void BindingRequiresSetAccessor_MustNotBeReadOnly()
+		{
+			ReadOnlyCommand command = new();
+			CommandLineArguments args = CreateArgs("read-only");
+
+			Assert.Throws<ReadOnlyCommandArgumentsException>(() => CommandArgumentsBinder.BindArguments(command, args));
+		}
+
+		[Fact]
+		public void SupportsInitOnlySetters()
+		{
+			InitOnlyCommand command = new();
+			CommandLineArguments args = CreateArgs("init-only setters");
+
+			Assert.Null(command.Args);
+			CommandArgumentsBinder.BindArguments(command, args);
+			Assert.Equal(new string[] { "init-only setters" }, command.Args);
+		}
+
 		private static CommandLineArguments CreateArgs(params string[] arguments)
 		{
 			return new CommandLineArguments(String.Empty, new List<string>(arguments), new Dictionary<string, string?>());

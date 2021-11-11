@@ -40,7 +40,10 @@ namespace F0.Reflection
 				return prop.Key.Equals(option, StringComparison.Ordinal);
 			}).Value;
 
-			return property ?? throw new CommandOptionNotFoundException(command, option);
+			_ = property ?? throw new CommandOptionNotFoundException(command, option);
+			_ = property.SetMethod ?? throw new ReadOnlyCommandOptionException(property);
+
+			return property;
 		}
 
 		private static void SetOption(PropertyInfo property, CommandBase command, string? value)

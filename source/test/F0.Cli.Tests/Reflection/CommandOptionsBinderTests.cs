@@ -90,6 +90,35 @@ namespace F0.Tests.Reflection
 			Assert.Same(option2, command.Option2);
 		}
 
+		[Fact]
+		public void BindingRequiresPublicSetAccessor_MustNotBeNonPublic()
+		{
+			InternalCommand command = new();
+			CommandLineArguments args = CreateArgs(("internal", "value"));
+
+			Assert.Throws<CommandOptionNotFoundException>(() => CommandOptionsBinder.BindOptions(command, args));
+		}
+
+		[Fact]
+		public void BindingRequiresSetAccessor_MustNotBeReadOnly()
+		{
+			ReadOnlyCommand command = new();
+			CommandLineArguments args = CreateArgs(("readonly", "value"));
+
+			Assert.Throws<ReadOnlyCommandOptionException>(() => CommandOptionsBinder.BindOptions(command, args));
+		}
+
+		[Fact]
+		public void SupportsInitOnlySetters()
+		{
+			InitOnlyCommand command = new();
+			CommandLineArguments args = CreateArgs(("initonly", "C# 9.0 or greater"));
+
+			Assert.Null(command.InitOnly);
+			CommandOptionsBinder.BindOptions(command, args);
+			Assert.Equal("C# 9.0 or greater", command.InitOnly);
+		}
+
 		private static CommandLineArguments CreateArgs(params (string Key, string? Value)[] options)
 		{
 			Dictionary<string, string?> switches = new();

@@ -5,17 +5,17 @@ using F0.Cli;
 
 namespace F0.Tests.Commands
 {
-	internal sealed class InternalCommand : CommandBase
+	public sealed class ReadOnlyCommand : CommandBase
 	{
-		internal const string Name = "internal";
-
-		public InternalCommand()
+		public ReadOnlyCommand()
 		{
+			Args = Array.Empty<string>();
+			ReadOnly = String.Empty;
 		}
 
-		internal string[]? Args { get; set; }
+		public string[] Args { get; }
 
-		internal string? Internal { get; set; }
+		public string ReadOnly { get; }
 
 		public override Task<CommandResult> ExecuteAsync(CancellationToken cancellationToken)
 		{

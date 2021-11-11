@@ -46,7 +46,11 @@ namespace F0.Reflection
 				throw new AmbiguousCommandArgumentsException(command, candidates);
 			}
 
-			return candidates.Single();
+			PropertyInfo property = candidates.Single();
+
+			_ = property.SetMethod ?? throw new ReadOnlyCommandArgumentsException(property);
+
+			return property;
 		}
 
 		private static void SetArguments(PropertyInfo property, CommandBase command, CommandLineArguments args)
