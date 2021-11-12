@@ -2,6 +2,8 @@
 CHANGELOG
 
 ## vNext
+
+## v0.6.0 (2021-11-12)
 - Added target framework: `.NET 5`.
 - Added annotations for _nullable reference types_.
 - Added option binding of _native-sized integers_, both `nint` and `nuint` (`System.IntPtr` and `System.UIntPtr`).

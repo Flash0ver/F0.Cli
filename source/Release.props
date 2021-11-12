@@ -1,8 +1,14 @@
 <Project>
 
   <PropertyGroup>
-    <F0Version>0.5.0</F0Version>
-    <F0PackageReleaseNotes>Added option binding of built-in numeric types (C#) and System.Numerics.BigInteger.</F0PackageReleaseNotes>
+    <F0Version>0.6.0</F0Version>
+    <F0PackageReleaseNotes>- Annotated APIs for nullable reference types
+- Added target framework: .NET 5
+- Added option binding of native-sized integers
+- Added option binding of System.Half (applies to .NET 5 or greater)
+- Changed extension methods to explicitly require the Assembly with the Commands
+- Changed license to MIT License
+- Updated dependency on Generic Host to Microsoft.Extensions.Hosting 5.0.0</F0PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>
