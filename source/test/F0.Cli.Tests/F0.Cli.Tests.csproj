@@ -4,7 +4,6 @@
     <TargetFrameworks>net5.0;netcoreapp3.1;netcoreapp2.1;net472</TargetFrameworks>
     <AssemblyName>F0.Cli.Tests</AssemblyName>
     <RootNamespace>F0.Tests</RootNamespace>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
